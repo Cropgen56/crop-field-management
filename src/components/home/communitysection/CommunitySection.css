@@ -1,0 +1,24 @@
+.community-section {
+  padding: 1rem;
+  background: #fce4ec;
+}
+
+.community-options {
+  display: flex;
+  gap: 1rem;
+}
+
+.community-card {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.community-card button {
+  background-color: #d81b60;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}

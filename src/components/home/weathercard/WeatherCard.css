@@ -1,0 +1,23 @@
+.weather-card {
+  background: #f0f0f0;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem;
+}
+
+.weather-stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 1rem;
+}
+
+.sun-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sun-path img {
+  width: 100%;
+  max-width: 200px;
+}

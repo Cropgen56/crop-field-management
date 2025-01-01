@@ -1,0 +1,16 @@
+.crop-card {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.crop-card h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.crop-card p {
+  margin: 0.5rem 0 0;
+  font-size: 1rem;
+}
