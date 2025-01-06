@@ -9,10 +9,10 @@ const Home = () => {
   return (
     <div className="home-page-main-container">
       <Header />
-      {/* <WeatherCard /> */}
-      {/* <MyFarm /> */}
+      <WeatherCard />
+      <MyFarm />
       {/* <CommunitySection /> */}
-      {/* <NavigationBar /> */}
+      <NavigationBar />
     </div>
   );
 };

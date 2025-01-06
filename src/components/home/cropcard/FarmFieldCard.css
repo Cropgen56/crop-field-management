@@ -1,0 +1,108 @@
+.farm-field-card {
+  min-width: 180px;
+  height: 240px;
+  border: 2px solid #ccc;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 10px;
+}
+
+.add-field-placeholder {
+  background-color: #eaeaea;
+  height: 60%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  font-size: 1.2rem;
+  color: #888;
+  font-weight: bold;
+}
+
+.farm-field-card-content {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.farm-field-card-content p {
+  font-size: 1rem;
+  color: #075a53;
+  font-weight: 600;
+  margin: 5px 0;
+}
+
+.farm-field-card-content small {
+  font-size: 0.8rem;
+  color: #344e41;
+}
+
+.add-field-button {
+  background-color: #075a53;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Mobile-specific adjustments */
+@media (max-width: 768px) {
+  .farm-field-card {
+    min-width: 100px;
+    height: 120px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 5px;
+  }
+
+  .farm-field-card img {
+    width: 100%;
+  }
+  .add-field-placeholder {
+    height: 60%;
+    font-size: 0.9rem;
+    color: #a2a2a2;
+    font-weight: 600;
+  }
+
+  .farm-field-card-content {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 0.8rem;
+    text-align: start;
+  }
+
+  .farm-field-card-content p {
+    font-size: 0.7rem;
+    margin: 0;
+  }
+
+  .farm-field-card-content small {
+    font-size: 0.7rem;
+  }
+
+  .add-field-button {
+    width: 30px;
+    height: 30px;
+    font-size: 20px;
+  }
+}

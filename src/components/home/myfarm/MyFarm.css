@@ -1,18 +1,247 @@
 .my-farm {
-  padding: 1rem;
-  background: #e8f5e9;
+  padding: 10px;
+  font-family: Arial, sans-serif;
+  margin-top: 10rem;
+}
+
+.my-farm p {
+  color: #075a53;
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 5px;
+  margin: 0;
+  padding: 0;
+}
+
+.crop-list-container {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  gap: 16px;
+}
+
+.add-field-card {
+  min-width: 150px;
+  height: 200px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+}
+
+.add-field-content {
+  text-align: center;
+  color: #666;
 }
 
 .add-field-btn {
-  background-color: #00796b;
+  background-color: #28a745;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 24px;
+  cursor: pointer;
 }
 
 .crop-list {
   display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 16px;
+}
+
+@media (max-width: 768px) {
+  .crop-add-card-button {
+    min-width: 100px;
+    height: 120px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 5px;
+  }
+  .add-field-placeholder {
+    background-color: #d9d9d9;
+    height: 60%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    font-size: 0.9rem;
+    color: #a2a2a2;
+    font-weight: 600;
+  }
+  .crop-add-card-content {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: start;
+    margin-top: 0.8rem;
+  }
+  .crop-add-card-content p {
+    font-size: 0.6rem;
+    color: #075a53;
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+  }
+  .crop-add-card-content small {
+    font-size: 0.6rem;
+    color: #344e41;
+  }
+  .crop-add-card-content .add-field-button {
+    background-color: #075a53;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .my-farm {
+    margin-top: 12rem;
+  }
+  .my-farm .heading {
+    font-size: 18px;
+    margin-bottom: 0.9rem;
+  }
+  .add-field-card {
+    min-width: 120px;
+    height: 150px;
+  }
+}
+
+/* General Desktop Adjustments */
+@media (min-width: 1024px) {
+  .my-farm {
+    margin-top: 6rem;
+    padding: 20px;
+  }
+
+  .my-farm p {
+    font-size: 2rem;
+    margin-bottom: 10px;
+  }
+
+  .crop-list-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: center;
+  }
+
+  .crop-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+  }
+
+  .crop-add-card-button {
+    min-width: 180px;
+    height: 240px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .add-field-placeholder {
+    background-color: #eaeaea;
+    height: 60%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    font-size: 1.2rem;
+    color: #888;
+    font-weight: bold;
+  }
+
+  .crop-add-card-content {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+  .crop-add-card-content p {
+    font-size: 1rem;
+    color: #075a53;
+    font-weight: 600;
+    margin: 5px 0;
+  }
+
+  .crop-add-card-content small {
+    font-size: 0.8rem;
+    color: #344e41;
+  }
+
+  .crop-add-card-content .add-field-button {
+    background-color: #075a53;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .add-field-card {
+    min-width: 200px;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    background-color: #f7f7f7;
+  }
+
+  .add-field-content {
+    text-align: center;
+    color: #444;
+    font-size: 1rem;
+  }
+
+  .add-field-btn {
+    width: 50px;
+    height: 50px;
+    font-size: 28px;
+    background-color: #28a745;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
 }
