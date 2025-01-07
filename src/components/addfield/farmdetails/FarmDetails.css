@@ -1,0 +1,167 @@
+/* Container Styles */
+.farm-details-container {
+  max-width: 100%;
+  margin: auto;
+  padding: 15px 0;
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  margin-top: 1rem;
+}
+
+/* Header Section */
+.farm-details-container .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #000;
+  padding: 15px;
+}
+
+.farm-details-container .header .title h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.farm-details-container .header .title p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #a7a5a5;
+}
+
+/* Farm Header Section */
+.farm-details-container .farm-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 20px;
+}
+
+.farm-details-container .farm-header .heading {
+  display: flex;
+  width: 70%;
+}
+
+.farm-details-container .farm-header .heading .icon {
+  margin-right: 0.3rem;
+}
+
+.farm-details-container .farm-header .heading h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.farm-details-container .farm-header .heading p {
+  margin: 0;
+  color: gray;
+  font-size: 0.9rem;
+}
+
+/* Content Section */
+.farm-details-container .content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 15px;
+}
+
+/* Image Section */
+.farm-details-container .image-container {
+  width: 40%;
+}
+
+.farm-details-container .image-container img {
+  width: 100%;
+  max-width: 300px !important;
+  height: 150px;
+  border-radius: 8px;
+}
+
+/* Table Styles */
+.farm-details-container .farm-details-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0px;
+  margin-left: 10px;
+}
+
+.farm-details-container .farm-details-table td {
+  padding: 10px 20px;
+  color: #a2a2a2;
+}
+
+.farm-details-container .farm-details-table td:first-child {
+  font-weight: bold;
+  color: #004d40;
+  width: 40%;
+}
+
+.farm-details-container .farm-details-table td:last-child {
+  text-align: left;
+  color: #333;
+}
+
+.farm-details-container .farm-details-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.farm-details-container .farm-details-table tr:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+/* Details Section */
+.farm-details-container .details {
+  text-align: left;
+  width: 100%;
+}
+
+.farm-details-container .details p {
+  margin: 8px 0;
+  font-size: 1rem;
+}
+
+.farm-details-container .details strong {
+  color: #004d40;
+}
+
+/* Edit Button Section */
+.farm-details-container .edit-farm-button {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.farm-details-container .edit-button {
+  width: 90%;
+  background: #004d40;
+  color: white;
+  padding: 10px;
+  border: none;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 8px;
+}
+
+.farm-details-container .edit-button:hover {
+  background: #00695c;
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+  .farm-details-container .content {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .farm-details-container .image-container {
+    flex: 1;
+  }
+
+  .farm-details-container .details {
+    flex: 1;
+    margin-left: 20px;
+  }
+}

@@ -1,3 +1,63 @@
+/* show the video over the map */
+/* Overlay Background */
+.video-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.video-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  position: relative;
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+  z-index: 10000;
+}
+
+/* Video Content */
+.video-content {
+  width: 100%;
+  border-radius: 8px;
+}
+
+/* Close Button */
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.close-button:hover {
+  background: #d32f2f;
+}
+
+/* Main Content */
+.main-content {
+  padding: 2rem;
+  text-align: center;
+}
 /* General Layout */
 .map-layout {
   height: 100vh;

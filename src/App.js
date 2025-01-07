@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 // import About from "./pages/About";
 import NotFound from "./pages/PageNotFound";
 import AddField from "./pages/AddField";
+import MyFields from "./pages/MyFields";
 
 const App = () => {
   return (
@@ -11,6 +12,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/add-field" element={<AddField />} />
+        <Route path="/my-fields" element={<MyFields />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>

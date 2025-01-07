@@ -8,15 +8,23 @@ import {
   Logo,
 } from "../../../assets/Icons";
 import bottomImage from "../../../assets/Images/bottomnavigation.png";
+import { useNavigate } from "react-router-dom";
 
 const NavigationBar = () => {
+  const navigate = useNavigate();
   return (
     <div className="bottom-navigation-container">
       <div className="bottom-navigation">
         <img src={bottomImage} alt="navigation bottom image " />
         <div className="nav-item">
           <div className="icon">
-            <span role="img" aria-label="home">
+            <span
+              role="img"
+              aria-label="home"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
               <HomeIcon />
             </span>{" "}
           </div>
@@ -39,7 +47,13 @@ const NavigationBar = () => {
         </div>
         <div className="nav-item">
           <div className="icon">
-            <span role="img" aria-label="my farm">
+            <span
+              role="img"
+              aria-label="my farm"
+              onClick={() => {
+                navigate("/my-fields");
+              }}
+            >
               <MyFarmIcon />
             </span>{" "}
           </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import L from "leaflet";
 import {
@@ -8,7 +8,6 @@ import {
   Popup,
   Polygon,
   useMapEvents,
-  LayersControl,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
@@ -20,13 +19,25 @@ import {
   PenIcon,
   SearchIcon,
 } from "../../assets/Icons";
-const { BaseLayer } = LayersControl;
+import AddFieldDetails from "./addfielddetails/AddFieldDetails";
 
 const AddFieldMap = () => {
   const [markers, setMarkers] = useState([]);
   const [isAddingMarkers, setIsAddingMarkers] = useState(false);
-  const mapRef = useRef();
+  const [searchQuery, setSearchQuery] = useState("");
+  const mapRef = useRef(null);
   const navigate = useNavigate();
+  const [lat, setLat] = useState(20.1360471);
+  const [lng, setLng] = useState(77.1360471);
+  const [isMapReady, setIsMapReady] = useState(false);
+
+  // Toggle form visibility
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Handle form toggle
+  const toggleForm = () => {
+    setIsOpen(!isOpen);
+  };
 
   // Create a custom yellow marker icon using divIcon
   const yellowMarkerIcon = new L.divIcon({
@@ -56,8 +67,106 @@ const AddFieldMap = () => {
 
   const clearMarkers = () => setMarkers([]);
 
+  // Function to fly to the location after the map is loaded
+  const flyToLocation = (latitude, longitude) => {
+    if (mapRef.current && isMapReady) {
+      mapRef.current.flyTo([latitude, longitude], 17);
+    } else {
+      console.error("Map instance is not initialized yet. Retrying...");
+      setTimeout(() => flyToLocation(latitude, longitude), 100); // Retry after 100ms
+    }
+  };
+
+  // Function to get the user's current location
+  const goToCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          console.log(latitude, longitude);
+          setLat(latitude);
+          setLng(longitude);
+          flyToLocation(latitude, longitude);
+        },
+        (error) => {
+          console.error("Error getting current location:", error);
+          alert(
+            "Could not get your current location. Please enable location access."
+          );
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+
+  const searchLocation = async () => {
+    if (!searchQuery.trim()) return;
+
+    try {
+      const response = await fetch(
+        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+          searchQuery
+        )}&format=json&limit=1`
+      );
+      const data = await response.json();
+
+      if (data.length > 0) {
+        const { lat, lon, display_name } = data[0];
+        const latitude = parseFloat(lat);
+        const longitude = parseFloat(lon);
+
+        // Wait until mapRef is set before trying to fly to the location
+        if (isMapReady) {
+          flyToLocation(latitude, longitude);
+        } else {
+          console.error("Map not initialized yet, retrying...");
+          setTimeout(() => flyToLocation(latitude, longitude), 100);
+        }
+
+        // Optionally, add a marker
+        setMarkers((currentMarkers) => [
+          ...currentMarkers,
+          { lat: latitude, lng: longitude, name: display_name },
+        ]);
+      } else {
+        alert("Location not found. Try another search.");
+      }
+    } catch (error) {
+      console.error("Error searching for location:", error);
+    }
+  };
+
+  // Set the map as ready when the map instance is created
+  const onMapCreate = (mapInstance) => {
+    mapRef.current = mapInstance;
+    setIsMapReady(true);
+  };
+
+  // show the video card
+  const [showCard, setShowCard] = useState(false);
+
+  const handleClose = () => {
+    setShowCard(false);
+  };
+
   return (
     <div className="map-layout add-field">
+      {/* show the card to the user  */}
+      {showCard && (
+        <div className="video-overlay">
+          <div className="video-card">
+            <video controls autoPlay className="video-content">
+              <source src="your-video-url.mp4" type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+            <button className="close-button" onClick={handleClose}>
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
+      {/* main content of the page */}
       <div className="map-content">
         <div className="map-header">
           <div
@@ -69,18 +178,27 @@ const AddFieldMap = () => {
             <LeftArrowIcon />
           </div>
           <div className="search-bar">
-            <SearchIcon />
-            <input type="text" placeholder="Search Location" />
+            <SearchIcon
+              onClick={searchLocation}
+              style={{ cursor: "pointer" }}
+            />
+            <input
+              type="text"
+              placeholder="Search Location"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && searchLocation()}
+            />
             <MicIcon />
           </div>
         </div>
 
         <MapContainer
-          center={[20.1360471, 77.157196]}
+          center={[lat, lng]}
           zoom={17}
           zoomControl={false}
           className="map-container"
-          whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
+          whenCreated={onMapCreate}
         >
           <TileLayer
             attribution="© Google Satellite"
@@ -115,15 +233,27 @@ const AddFieldMap = () => {
             <PenIcon />
           </button>
           <button className="add-markers-btn">
-            {/* Yellow icon for adding markers */}
             <CurrentLocationIcon />
           </button>
         </div>
         <div className="create-farm-container">
-          <button onClick={() => setIsAddingMarkers(!isAddingMarkers)}>
-            Create Farm
+          <button
+            onClick={() => {
+              setIsAddingMarkers(!isAddingMarkers);
+            }}
+          >
+            {isAddingMarkers ? "Stop Markers" : "Add Markers"}
+          </button>
+          {/* Button to go to current location */}
+          <button
+            onClick={() => {
+              toggleForm(!isOpen);
+            }}
+          >
+            Save Field
           </button>
         </div>
+        <AddFieldDetails isOpen={isOpen} toggleForm={toggleForm} />
       </div>
     </div>
   );
