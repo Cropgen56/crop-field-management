@@ -1,0 +1,96 @@
+.responsive-table {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  background-color: #075a53;
+  position: absolute;
+  z-index: 1000;
+}
+
+.table-header-wrapper {
+  display: flex;
+  overflow-x: auto;
+}
+
+.table-header {
+  display: flex;
+  flex-wrap: nowrap;
+  color: white;
+  min-width: max-content;
+}
+
+.table-header span {
+  border: none;
+  background-color: 036d6f;
+  color: white;
+  cursor: pointer;
+  overflow-x: auto;
+  font-size: 0.7rem;
+  padding: 8px;
+}
+
+.table-header button:hover {
+  background-color: #025c5d;
+}
+
+.table-content {
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 10px;
+  gap: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc #f8f8f8;
+}
+
+.table-content::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-content::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+.table-content::-webkit-scrollbar-track {
+  background: #f8f8f8;
+}
+
+.date-item {
+  flex: 0 0 auto;
+  padding: 10px 15px;
+  background-color: #0a796f;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  font-size: 14px;
+  color: #fff;
+  text-align: center;
+  cursor: pointer;
+}
+
+.date-item:hover {
+  background-color: #0a796f;
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+  .responsive-table {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    width: 100%;
+    max-width: 100%;
+    background-color: #075a53;
+    position: absolute;
+    margin-top: 200px;
+    z-index: 1000;
+  }
+}
+
+/* Style for today's date */
+.date-item.today {
+  background-color: #f0c0c0;
+  color: #900;
+  font-weight: bold;
+}

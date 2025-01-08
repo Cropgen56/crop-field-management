@@ -1,0 +1,149 @@
+/* Container for Crop Health */
+.crop-health-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  margin-top: 2rem;
+}
+
+.crop-health-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 800px;
+  padding: 20px;
+}
+
+.crop-health-card h2 {
+  color: #075a53;
+  font-size: 1.3rem;
+  margin: 0;
+}
+
+/* Horizontal Layout for Details */
+.crop-details-horizontal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+}
+
+/* Crop Image Styling */
+.crop-image {
+  height: 120px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 2px solid black;
+}
+
+.crop-image img {
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+}
+
+/* Crop Info */
+.crop-info {
+  flex: 1;
+  margin-left: 20px;
+  font-size: 14px;
+  color: #344e41;
+}
+
+.crop-info strong {
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+
+.crop-info p {
+  margin: 4px 0;
+}
+
+/* Doughnut Chart Container */
+.chart-container {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chart-percentage {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  color: #075a53;
+}
+
+.chart-percentage span {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.chart-percentage p {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .crop-health-card {
+    width: 100%;
+    padding: 10px;
+  }
+
+  .crop-details-horizontal {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .chart-container {
+    margin-top: 15px;
+  }
+
+  .crop-info {
+    text-align: start;
+    margin: 10px 0;
+  }
+
+  .crop-info-table td {
+    padding: 3px 5px;
+    font-size: 12px;
+  }
+}
+
+/* Crop Info Table Styling */
+.crop-info-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #344e41;
+}
+
+.crop-info-table th {
+  padding: 5px 10px;
+  vertical-align: top;
+}
+
+.crop-info-table th:first-child {
+  font-weight: bold;
+  color: #344e41;
+  text-align: left;
+}
+
+.crop-info-table td:last-child {
+  text-align: left;
+  color: #000;
+  font-weight: 600;
+}

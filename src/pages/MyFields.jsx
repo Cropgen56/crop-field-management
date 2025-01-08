@@ -1,6 +1,6 @@
-import FarmDetails from "../components/addfield/farmdetails/FarmDetails";
+import FarmDetails from "../components/myfields/farmdetails/FarmDetails";
 import NavigationBar from "../components/home/navigationbar/NavigationBar";
-import MyFieldsHeader from "../components/myfields/MyFieldsHeader";
+import MyFieldsHeader from "../components/myfields/myfarmheader/MyFieldsHeader";
 import "../style/MyFields.css";
 const MyFields = () => {
   const farmData = {

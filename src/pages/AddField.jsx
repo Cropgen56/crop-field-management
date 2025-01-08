@@ -1,4 +1,4 @@
-import AddFieldMap from "../components/addfield/AddFieldMap";
+import AddFieldMap from "../components/addfield/addfieldmap/AddFieldMap";
 
 const AddField = () => {
   return <AddFieldMap />;

@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { LeftArrowIcon } from "../../assets/Icons";
+import { LeftArrowIcon } from "../../../assets/Icons";
 import "./MyFieldsHeader.css";
 
 const MyFieldsHeader = () => {

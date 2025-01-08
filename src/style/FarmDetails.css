@@ -1,0 +1,11 @@
+.farm-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.farm-details .farm-details-body {
+  margin-top: 4rem;
+  width: 100%;
+}

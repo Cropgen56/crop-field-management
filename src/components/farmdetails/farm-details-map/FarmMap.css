@@ -1,0 +1,18 @@
+.farm-map {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+.farm-map__map-container {
+  width: 100%;
+  height: 280px;
+  overflow: hidden;
+}
+
+.farm-map__image-overlay {
+  z-index: 999;
+  pointer-events: none;
+}

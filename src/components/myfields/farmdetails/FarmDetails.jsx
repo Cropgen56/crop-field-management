@@ -2,10 +2,17 @@ import React from "react";
 import "./FarmDetails.css";
 import FarmImage from "../../../assets/Images/farm-image.jpg";
 import { MyFarmColorIcon, ShareButtonIcon } from "../../../assets/Icons";
+import { useNavigate } from "react-router-dom";
 
 const FarmDetails = ({ farmData, onEdit }) => {
+  const navigate = useNavigate();
   return (
-    <div className="farm-details-container">
+    <div
+      className="farm-details-container"
+      onClick={() => {
+        navigate("/farm-details");
+      }}
+    >
       {/* Farm Header */}
       <div className="farm-header">
         <div className="heading">

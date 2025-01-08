@@ -1,0 +1,86 @@
+/* Wrapper for the component */
+.health-indicator-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 600px;
+  margin: auto;
+}
+
+/* The bar containing the different segments */
+.indicator-bar {
+  display: flex;
+  width: 80%;
+  height: 10px;
+  padding-top: 20px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+/* Individual segments */
+.healthy {
+  flex: 1;
+  background: linear-gradient(to right, #34db3e, #7de302);
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  height: 0.3rem;
+}
+
+.moderate {
+  flex: 1;
+  background: linear-gradient(to right, #7de302, #ff9600);
+  height: 0.3rem;
+}
+
+.low {
+  flex: 1;
+  background: linear-gradient(to right, #ff9600, #ff1300);
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  height: 0.3rem;
+}
+
+.cloud {
+  flex: 1;
+  background: #9a9898;
+  margin-left: 1rem;
+  border-radius: 5px;
+  height: 0.3rem;
+}
+
+/* Labels for the indicator */
+.indicator-labels {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #075a53;
+  padding-bottom: 10px;
+}
+
+.indicator-labels span {
+  text-align: start;
+  width: 100%;
+}
+.indicator-labels .moderate-label {
+  text-align: center;
+}
+.indicator-labels .low-label {
+  text-align: end;
+}
+.indicator-labels .cloud-label {
+  margin-left: 4rem;
+}
+/* Responsive Design */
+@media (max-width: 768px) {
+  .indicator-bar {
+    height: 8px;
+  }
+
+  .indicator-labels {
+    font-size: 12px;
+  }
+}

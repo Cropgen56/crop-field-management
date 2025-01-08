@@ -18,8 +18,8 @@ import {
   MicIcon,
   PenIcon,
   SearchIcon,
-} from "../../assets/Icons";
-import AddFieldDetails from "./addfielddetails/AddFieldDetails";
+} from "../../../assets/Icons";
+import AddFieldDetails from "../addfielddetails/AddFieldDetails";
 
 const AddFieldMap = () => {
   const [markers, setMarkers] = useState([]);
@@ -39,6 +39,7 @@ const AddFieldMap = () => {
     setIsOpen(!isOpen);
   };
 
+  console.log(markers);
   // Create a custom yellow marker icon using divIcon
   const yellowMarkerIcon = new L.divIcon({
     className: "yellow-marker",
@@ -115,13 +116,14 @@ const AddFieldMap = () => {
         const { lat, lon, display_name } = data[0];
         const latitude = parseFloat(lat);
         const longitude = parseFloat(lon);
+        console.log(latitude, longitude);
 
-        // Wait until mapRef is set before trying to fly to the location
+        // Fly to location only if map is ready
         if (isMapReady) {
           flyToLocation(latitude, longitude);
         } else {
           console.error("Map not initialized yet, retrying...");
-          setTimeout(() => flyToLocation(latitude, longitude), 100);
+          setTimeout(() => flyToLocation(latitude, longitude), 100); // Retry after 100ms
         }
 
         // Optionally, add a marker
