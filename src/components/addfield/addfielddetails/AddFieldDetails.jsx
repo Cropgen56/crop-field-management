@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import "./AddFieldDetails.css";
 import FarmImage from "../../../assets/Images/farm-image.jpg";
 import { MyFarmColorIcon } from "../../../assets/Icons";
+import { useDispatch } from "react-redux";
+import { addFarmField } from "../../../store/farmSlice";
+import { useNavigate } from "react-router-dom";
 
-const AddFieldDetails = ({ isOpen, toggleForm }) => {
+const AddFieldDetails = ({ isOpen, toggleForm, fieldCoordinate }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate("/my-farms");
+
+  const userData = JSON.parse(localStorage.getItem("userData"));
+
   // Initialize state to hold field data
   const [field, setField] = useState({
     farmName: "",
-    crops: "",
+    cropName: "",
     sowingDate: "",
     variety: "",
     irrigation: "",
@@ -19,11 +27,80 @@ const AddFieldDetails = ({ isOpen, toggleForm }) => {
     setField({ ...field, [name]: value });
   };
 
+  // Validate form fields and check data types
+  const validateForm = () => {
+    let valid = true;
+
+    if (
+      !field.farmName ||
+      typeof field.farmName !== "string" ||
+      field.farmName.trim() === ""
+    ) {
+      valid = false;
+      alert("Farm Name is required and must be a string.");
+    }
+
+    if (!field.cropName) {
+      valid = false;
+      alert("Please select a crop.");
+    }
+
+    if (!field.sowingDate || isNaN(Date.parse(field.sowingDate))) {
+      valid = false;
+      alert("Sowing Date is required.");
+    }
+
+    if (
+      !field.variety ||
+      typeof field.variety !== "string" ||
+      field.variety.trim() === ""
+    ) {
+      valid = false;
+      alert("Variety is required .");
+    }
+
+    if (!field.irrigation) {
+      valid = false;
+      alert("Please select an irrigation type.");
+    } else if (
+      !["open-irrigation", "drip-irrigation", "sprinkler"].includes(
+        field.irrigation
+      )
+    ) {
+      valid = false;
+      alert("Invalid irrigation type selected.");
+    }
+
+    return valid;
+  };
+
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Farm Details:", field);
-    // Additional actions like API calls or state updates can go here
+
+    // Validate form data
+    if (validateForm()) {
+      dispatch(
+        addFarmField({
+          latlng: fieldCoordinate,
+          userId: userData?._id,
+          cropName: field.cropName,
+          variety: field.variety,
+          sowingDate: field.sowingDate,
+          typeOfIrrigation: field.irrigation,
+          farmName: field.farmName,
+        })
+      ).then((res) => {
+        if (res?.payload?.success) {
+          alert("Farm added successfully");
+          const farmDetails = res?.payload?.farmField;
+          console.log(farmDetails);
+          navigate("/farm-details", { state: farmDetails });
+        }
+      });
+    } else {
+      console.log("Form validation failed");
+    }
   };
 
   return (
@@ -65,16 +142,16 @@ const AddFieldDetails = ({ isOpen, toggleForm }) => {
               onChange={handleInputChange}
             />
 
-            {/* Crops */}
-            <label htmlFor="crops">Crops</label>
+            {/* cropName */}
+            <label htmlFor="cropName">cropName</label>
             <select
-              id="crops"
-              name="crops"
-              value={field.crops}
+              id="cropName"
+              name="cropName"
+              value={field.cropName}
               onChange={handleInputChange}
             >
               <option value="" disabled>
-                {/* Select crop */}
+                Select crop
               </option>
               <option value="soybean">Soybean</option>
               <option value="wheat">Wheat</option>
@@ -91,7 +168,7 @@ const AddFieldDetails = ({ isOpen, toggleForm }) => {
               onChange={handleInputChange}
             />
 
-            {/* Varity */}
+            {/* Variety */}
             <label htmlFor="variety">Variety</label>
             <input
               type="text"
@@ -100,6 +177,7 @@ const AddFieldDetails = ({ isOpen, toggleForm }) => {
               value={field.variety}
               onChange={handleInputChange}
             />
+
             {/* Type of Irrigation */}
             <label htmlFor="irrigation">Type of Irrigation</label>
             <select
@@ -109,7 +187,7 @@ const AddFieldDetails = ({ isOpen, toggleForm }) => {
               onChange={handleInputChange}
             >
               <option value="" disabled>
-                {/* Select irrigation type */}
+                Select irrigation type
               </option>
               <option value="open-irrigation">Open Irrigation</option>
               <option value="drip-irrigation">Drip Irrigation</option>
@@ -118,7 +196,7 @@ const AddFieldDetails = ({ isOpen, toggleForm }) => {
           </form>
         </div>
         {/* Save Button */}
-        <button type="submit" className="save-button">
+        <button type="submit" className="save-button" onClick={handleSubmit}>
           Save Farm
         </button>
       </div>

@@ -1,4 +1,3 @@
-/* show the video over the map */
 /* Overlay Background */
 .video-overlay {
   position: fixed;
@@ -121,6 +120,40 @@
   color: #aaa;
 }
 
+.search-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #ffffff;
+  border-radius: 50px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  margin: 10px auto;
+}
+
+.search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 5px 10px;
+  margin-left: 10px;
+  border-radius: 50px;
+  font-size: 16px;
+  color: #333;
+}
+
+.search-input::placeholder {
+  color: #bbb;
+}
+
+.search-bar .loading-spinner {
+  margin-left: 10px;
+  font-size: 14px;
+  color: #007bff;
+}
+
 /* Map Controls */
 .map-controls {
   position: absolute;
@@ -231,10 +264,6 @@
     color: #aaa;
   }
 
-  .map-controls {
-    flex-direction: column;
-    gap: 5px;
-  }
   .create-farm-container {
     position: absolute;
     bottom: 20px;

@@ -4,6 +4,7 @@
 }
 .my-fields-main-container .farm-fields-container {
   margin-top: 5rem;
+  padding-bottom: 6rem;
 }
 
 @media (min-width: 768px) {

@@ -51,7 +51,7 @@ const NavigationBar = () => {
               role="img"
               aria-label="my farm"
               onClick={() => {
-                navigate("/my-fields");
+                navigate("/my-farms");
               }}
             >
               <MyFarmIcon />

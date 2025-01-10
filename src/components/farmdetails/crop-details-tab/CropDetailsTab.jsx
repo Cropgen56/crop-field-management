@@ -9,10 +9,12 @@ const CropDetailsTab = () => {
     const dates = [];
     const startDate = new Date(year, 0, 1);
     const endDate = new Date(year, 11, 31);
+    const currentDate = new Date();
 
+    // Loop through the year dates
     for (
       let date = startDate;
-      date <= endDate;
+      date < currentDate && date <= endDate;
       date.setDate(date.getDate() + 1)
     ) {
       dates.push(new Date(date));

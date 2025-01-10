@@ -1,0 +1,67 @@
+.card {
+  border: 1px solid #075a53;
+  border-radius: 8px;
+  padding: 5px 10px;
+  margin: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
+  max-width: 400px;
+  font-family: Arial, sans-serif;
+}
+
+.card-header {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333333;
+  margin-bottom: 12px;
+}
+
+.card-section {
+  margin-bottom: 12px;
+}
+
+.card-section p {
+  font-size: 0.9rem;
+  color: #555555;
+  margin: 0;
+}
+
+.card-section ul {
+  padding-left: 20px;
+  font-size: 0.9rem;
+  color: #555555;
+}
+
+.card-section ul li {
+  margin-bottom: 8px;
+}
+
+.arrow-button {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.arrow-button button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.arrow-button button:hover {
+  background: #0056b3;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .card {
+    max-width: 100%;
+  }
+  .card-section .day {
+    color: #075a53;
+    font-size: 1rem;
+  }
+}

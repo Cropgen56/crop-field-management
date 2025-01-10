@@ -9,3 +9,23 @@
   margin-top: 4rem;
   width: 100%;
 }
+
+@media (max-width: 768px) {
+  .crop-advisory-heading {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #075a53;
+    margin-top: 1rem;
+    margin-left: 0.5rem;
+  }
+  .soil-health-heading {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #075a53;
+    margin-top: 1rem;
+    margin-left: 0.5rem;
+  }
+  .farm-details .farm-details-body {
+    margin-bottom: 5rem;
+  }
+}
