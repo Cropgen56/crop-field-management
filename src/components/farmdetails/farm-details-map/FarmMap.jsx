@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import nvdiImage from "../../../assets/Images/farm-nvdi-image.png";
 import {
   MapContainer,
@@ -11,18 +11,47 @@ import "leaflet/dist/leaflet.css";
 import "./FarmMap.css";
 import CropDetailsTab from "../crop-details-tab/CropDetailsTab";
 
-const FarmMap = () => {
+const FarmMap = ({ farmDetails }) => {
   const [lat, setLat] = useState(20.1360471);
   const [lng, setLng] = useState(77.1360471);
   const mapRef = useRef(null);
 
-  // Polygon coordinates
-  const polygonCoordinates = [
-    [20.137281704504993, 77.1363937854767],
-    [20.136254256452098, 77.13630795478822],
-    [20.136022576055755, 77.1376919746399],
-    [20.13734214241536, 77.13800311088563],
-  ];
+  const polygonCoordinates = farmDetails?.field || [];
+
+  // Calculate the center of the polygon
+  function calculatePolygonCentroid(coordinates) {
+    let sumX = 0;
+    let sumY = 0;
+    let area = 0;
+
+    const n = coordinates.length;
+
+    for (let i = 0; i < n; i++) {
+      const { lat: x1, lng: y1 } = coordinates[i];
+      const { lat: x2, lng: y2 } = coordinates[(i + 1) % n];
+
+      const crossProduct = x1 * y2 - x2 * y1;
+
+      area += crossProduct;
+      sumX += (x1 + x2) * crossProduct;
+      sumY += (y1 + y2) * crossProduct;
+    }
+
+    area = area / 2;
+    const centroidX = sumX / (6 * area);
+    const centroidY = sumY / (6 * area);
+    return { centroidLat: centroidX, centroidLng: centroidY };
+  }
+
+  // Use useEffect to calculate the centroid when farmDetails changes
+  useEffect(() => {
+    if (polygonCoordinates.length > 0) {
+      const { centroidLat, centroidLng } =
+        calculatePolygonCentroid(polygonCoordinates);
+      setLat(centroidLat);
+      setLng(centroidLng);
+    }
+  }, [polygonCoordinates]);
 
   // Image overlay bounds
   const imageBounds = [
@@ -60,7 +89,7 @@ const FarmMap = () => {
         {/* Polygon boundary */}
         <Polygon
           pathOptions={{ fillColor: "green" }}
-          positions={polygonCoordinates}
+          positions={polygonCoordinates.map(({ lat, lng }) => [lat, lng])}
         />
         {/* Image overlay */}
         <ImageOverlay

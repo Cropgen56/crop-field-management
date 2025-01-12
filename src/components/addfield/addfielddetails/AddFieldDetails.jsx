@@ -5,8 +5,14 @@ import { MyFarmColorIcon } from "../../../assets/Icons";
 import { useDispatch } from "react-redux";
 import { addFarmField } from "../../../store/farmSlice";
 import { useNavigate } from "react-router-dom";
+import Loading from "../../common/Loading/Loading";
 
-const AddFieldDetails = ({ isOpen, toggleForm, fieldCoordinate }) => {
+const AddFieldDetails = ({
+  isOpen,
+  toggleForm,
+  fieldCoordinate,
+  setIsSubmitting,
+}) => {
   const dispatch = useDispatch();
   const navigate = useNavigate("/my-farms");
 
@@ -80,6 +86,7 @@ const AddFieldDetails = ({ isOpen, toggleForm, fieldCoordinate }) => {
 
     // Validate form data
     if (validateForm()) {
+      setIsSubmitting(true);
       dispatch(
         addFarmField({
           latlng: fieldCoordinate,
@@ -92,9 +99,9 @@ const AddFieldDetails = ({ isOpen, toggleForm, fieldCoordinate }) => {
         })
       ).then((res) => {
         if (res?.payload?.success) {
+          setIsSubmitting(false);
           alert("Farm added successfully");
           const farmDetails = res?.payload?.farmField;
-          console.log(farmDetails);
           navigate("/farm-details", { state: farmDetails });
         }
       });

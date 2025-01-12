@@ -17,6 +17,7 @@
 .table-header {
   display: flex;
   flex-wrap: nowrap;
+  align-items: center;
   color: white;
   min-width: max-content;
 }
@@ -73,6 +74,12 @@
 .date-item:hover {
   background-color: #0a796f;
 }
+.vertical-line {
+  color: #0a796f !important;
+  padding: 0px;
+  margin: 0px;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .responsive-table {
@@ -86,11 +93,32 @@
     margin-top: 200px;
     z-index: 1000;
   }
-}
 
-/* Style for today's date */
-.date-item.today {
-  background-color: #f0c0c0;
-  color: #900;
-  font-weight: bold;
+  /* Style for today's date */
+  .date-item.today {
+    background-color: #f0c0c0;
+    color: #900;
+    font-weight: bold;
+  }
+  .date-item {
+    flex: 0 0 auto;
+    padding: 5px 10px;
+    background-color: #0a796f;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    color: #fff;
+    text-align: center;
+    cursor: pointer;
+  }
+
+  .table-header span {
+    border: none;
+    background-color: 036d6f;
+    color: white;
+    cursor: pointer;
+    overflow-x: auto;
+    font-size: 1rem;
+    padding: 8px;
+  }
 }

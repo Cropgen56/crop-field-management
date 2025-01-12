@@ -38,10 +38,17 @@ const CropDetailsTab = () => {
     <div className="responsive-table">
       <div className="table-header-wrapper">
         <div className="table-header">
-          <span>Crop Health Check</span>
+          <span>Crop Health Check</span>{" "}
+          <span className="vertical-line">|</span>
           <span>Soil Organic Carbon</span>
+          <span className="vertical-line">|</span>
           <span>Moisture Stress Check</span>
+          <span className="vertical-line">|</span>
           <span>Water Stress Check</span>
+          <span className="vertical-line">|</span>
+          <span>Naitrogne Check</span>
+          <span className="vertical-line">|</span>
+          <span>Live Image </span>
         </div>
       </div>
       <div className="table-content">

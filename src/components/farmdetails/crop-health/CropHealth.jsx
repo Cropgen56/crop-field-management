@@ -4,6 +4,7 @@ import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import cropImage from "../../../assets/Images/weat-crop-image.jpg";
 import "./CropHealth.css";
 import * as turf from "@turf/turf";
+import { ShareButtonIcon } from "../../../assets/Icons";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -12,7 +13,7 @@ const CropHealth = ({ farmDetails }) => {
     datasets: [
       {
         data: [60, 40],
-        backgroundColor: ["#34DB3E", "#7DE302"],
+        backgroundColor: ["#34DB3E", "#F5D835"],
         borderWidth: 0,
       },
     ],
@@ -20,62 +21,44 @@ const CropHealth = ({ farmDetails }) => {
   const corrdinatesPoint = farmDetails?.field;
 
   let totalArea;
-  //  calcualte day from dates
+  //  Calculate days from dates
   function calculateDaysFromDate(input) {
-    // Parse the input date string into a Date object
     const targetDate = new Date(input);
-
-    // Check if the input date is valid
     if (isNaN(targetDate)) {
       console.error("Invalid date input");
       return null;
     }
-
-    // Get the current date
     const currentDate = new Date();
-
-    // Set the time part of both dates to midnight for accurate comparison
     targetDate.setHours(0, 0, 0, 0);
     currentDate.setHours(0, 0, 0, 0);
-
-    // Calculate the difference in milliseconds
     const timeDifference = currentDate - targetDate;
-
-    // Convert the difference to days
     const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-
     return daysDifference;
   }
 
-  // calculate area on the basis of coordinate
+  // Calculate area based on coordinates
   const calculateArea = (corrdinatesPoint) => {
-    // Transform backend data into Turf.js-compatible format
     const coordinates = farmDetails?.field?.map((point) => [
       point.lng,
       point.lat,
     ]);
-
-    // Close the polygon by adding the first point at the end
     coordinates.push(coordinates[0]);
-
-    // Create the polygon
     const polygon = turf.polygon([coordinates]);
-
-    // Calculate area in square meters
     const area = turf.area(polygon);
-
-    // Convert to hectares and acres
-    const areaHectares = area / 10000;
-    totalArea = area / 4046.86;
+    totalArea = area / 4046.86; // Convert to acres
   };
 
   if (corrdinatesPoint) {
     calculateArea(corrdinatesPoint);
   }
+
   return (
     <div className="crop-health-container">
       <div className="crop-health-card">
-        <h2>Crop Health</h2>
+        <div className="header">
+          <h2>Crop Health</h2>
+          <ShareButtonIcon />
+        </div>
         <div className="crop-details-horizontal">
           {/* Crop Image */}
           <div className="crop-image">
@@ -87,29 +70,30 @@ const CropHealth = ({ farmDetails }) => {
               <tbody>
                 <tr>
                   <th>
-                    <strong>Crop Name:</strong>
+                    <strong>Crop Name</strong>
                   </th>
-                  <td>{farmDetails?.cropName}</td>
+                  <td>:- {farmDetails?.cropName}</td>
                 </tr>
                 <tr>
                   <th>
-                    <strong>Crop Age:</strong>
+                    <strong>Crop Age</strong>
                   </th>
-                  <td>{`${calculateDaysFromDate(
-                    farmDetails?.sowingDate
-                  )} days`}</td>
+                  <td>
+                    :-{" "}
+                    {`${calculateDaysFromDate(farmDetails?.sowingDate)} days`}
+                  </td>
                 </tr>
                 <tr>
                   <th>
-                    <strong>Standard Yield Data:</strong>
+                    <strong>Standard Yield Data</strong>
                   </th>
-                  <td>{farmDetails?.sowingDate}</td>
+                  <td>:- 460.00 kg/acre</td>
                 </tr>
                 <tr>
                   <th>
-                    <strong>Total Area:</strong>
+                    <strong>Total Area</strong>
                   </th>
-                  <td>{totalArea?.toFixed(2) + " Acre"}</td>
+                  <td>:- {totalArea?.toFixed(2) + " Acre"}</td>
                 </tr>
               </tbody>
             </table>
@@ -132,8 +116,8 @@ const CropHealth = ({ farmDetails }) => {
                   },
                 },
               }}
-              width={100}
-              height={100}
+              width={50}
+              height={50}
             />
             <div className="chart-percentage">
               <span>60%</span>

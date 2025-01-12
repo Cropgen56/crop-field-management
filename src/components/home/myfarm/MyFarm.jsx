@@ -1,30 +1,30 @@
 import React, { useEffect } from "react";
 import "./MyFarm.css";
-import { AddFieldIcon } from "../../../assets/Icons";
+import { AddFieldIcon, PlusIcon } from "../../../assets/Icons";
 import FarmFieldCard from "../cropcard/FarmFieldCard.jsx";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getFarmFields } from "../../../store/farmSlice.js";
 import Loading from "../../common/Loading/Loading.jsx";
 
-const MyFarm = () => {
+const MyFarm = ({ fields }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const userData = JSON.parse(localStorage.getItem("userData")) || {};
+  // const dispatch = useDispatch();
+  // const userData = JSON.parse(localStorage.getItem("userData")) || {};
 
-  useEffect(() => {
-    if (userData?._id) {
-      dispatch(getFarmFields(userData?._id));
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (userData?._id) {
+  //     dispatch(getFarmFields(userData?._id));
+  //   }
+  // }, []);
 
-  const farmState = useSelector((state) => state?.farm);
-  const { fields = [], status, error } = farmState || {};
+  // const farmState = useSelector((state) => state?.farm);
+  // const { fields = [], status, error } = farmState || {};
 
-  // Handle loading and error states
-  if (status === "loading") {
-    return <Loading />;
-  }
+  // // Handle loading and error states
+  // if (status === "loading") {
+  //   return <Loading />;
+  // }
 
   return (
     <div className="my-farm">
@@ -44,7 +44,7 @@ const MyFarm = () => {
               <small>**ha</small>
             </div>
             <div className="add-field-button">
-              <AddFieldIcon />
+              <PlusIcon />
             </div>
           </div>
         </div>

@@ -20,7 +20,7 @@ const FarmDetails = () => {
       </div>
       <div className="farm-details-body">
         <HealthIndicator />
-        <FarmMap />
+        <FarmMap farmDetails={farmDetails} />
         <CropHealth farmDetails={farmDetails} />
         <div className="crop-advisory-heading">Crop Advisory</div>
         <CropAdvisoryCard />

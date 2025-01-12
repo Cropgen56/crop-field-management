@@ -13,18 +13,20 @@ import {
 import "leaflet/dist/leaflet.css";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import {
+  AddFieldIcon,
+  BackButtonIcon,
   CurrentLocationIcon,
+  DeleteFieldIcon,
   LeftArrowIcon,
-  MicIcon,
   PenIcon,
-  SearchIcon,
+  SaveIcon,
 } from "../../../assets/Icons";
 import AddFieldDetails from "../addfielddetails/AddFieldDetails";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import "leaflet-geosearch/dist/geosearch.css";
 import "./AddFieldMap.css";
 
-const AddFieldMap = () => {
+const AddFieldMap = ({ setIsSubmitting }) => {
   const [markers, setMarkers] = useState([]);
   const [isAddingMarkers, setIsAddingMarkers] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState({
@@ -32,17 +34,8 @@ const AddFieldMap = () => {
     lng: 77.1360471,
     name: "Default Location",
   });
-  const [isSearching, setIsSearching] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [showCard, setShowCard] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const mapRef = useRef(null);
   const navigate = useNavigate();
-  const toggleForm = () =>
-    setIsOpen(
-      markers.length >= 3 ? !isOpen : alert("Please complete the field first !")
-    );
-  const clearMarkers = () => setMarkers([]);
 
   const yellowMarkerIcon = new L.divIcon({
     className: "yellow-marker",
@@ -53,12 +46,16 @@ const AddFieldMap = () => {
     shadowSize: [41, 41],
   });
 
-  const checkCoordinate = () => {
+  // toggle form to add farm details
+  const toggleForm = () => {
     if (markers.length >= 3) {
-      return true;
+      setIsOpen(!isOpen);
+    } else {
+      alert("Please complete the field first!");
     }
-    return false;
   };
+
+  const clearMarkers = () => setMarkers([]);
 
   const Markers = () => {
     useMapEvents({
@@ -76,9 +73,21 @@ const AddFieldMap = () => {
     return null;
   };
 
-  // get the current location of the user
+  // remove the last marks
+  const removeLastMarker = () => {
+    setMarkers((currentMarkers) => {
+      if (currentMarkers.length === 0) {
+        alert("No markers left to remove.");
+        return currentMarkers;
+      }
+      return currentMarkers.slice(0, -1);
+    });
+  };
+
+  // get the currenct location
   const CurrentLocationButton = ({ onLocationFound }) => {
     const map = useMap();
+
     const handleCurrentLocation = () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
@@ -91,21 +100,22 @@ const AddFieldMap = () => {
             });
             map.setView([latitude, longitude], 18);
           },
-          (error) => alert("Unable to fetch your location."),
+          () => alert("Unable to fetch your location."),
           { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
       } else {
         alert("Geolocation not supported.");
       }
     };
+
     return (
       <button
         style={{
           position: "absolute",
-          top: "80vh",
-          right: "10px",
+          top: "65vh",
+          right: "16px",
           zIndex: 1000,
-          padding: "15px 15px",
+          padding: "14px 14px",
           backgroundColor: "#075a53",
           color: "#fff",
           border: "none",
@@ -119,7 +129,7 @@ const AddFieldMap = () => {
     );
   };
 
-  // Define the SearchField component
+  // search the location
   const SearchField = ({ onLocationSelect }) => {
     const map = useMap();
 
@@ -132,7 +142,6 @@ const AddFieldMap = () => {
         retainZoomLevel: false,
       });
 
-      // Add search control to map
       map.addControl(searchControl);
 
       map.on("geosearch/showlocation", (result) => {
@@ -142,118 +151,86 @@ const AddFieldMap = () => {
       });
 
       return () => {
-        map.removeControl(searchControl); // Cleanup on unmount
+        map.removeControl(searchControl);
       };
     }, [map, onLocationSelect]);
 
-    const handleSearchChange = (e) => {
-      setSearchQuery(e.target.value);
-    };
-
-    const handleSearchKeyPress = (e) => {
-      if (e.key === "Enter" && searchQuery.trim()) {
-        const provider = new OpenStreetMapProvider();
-        provider.search(searchQuery).then((results) => {
-          if (results.length > 0) {
-            const { x, y, label } = results[0].location;
-            onLocationSelect({ lat: y, lng: x, name: label });
-            map.setView([y, x], 18);
-          }
-        });
-      }
-    };
-
-    const handleSearchClick = () => {
-      if (searchQuery.trim()) {
-        const provider = new OpenStreetMapProvider();
-        provider.search(searchQuery).then((results) => {
-          if (results.length > 0) {
-            const { x, y, label } = results[0].location;
-            onLocationSelect({ lat: y, lng: x, name: label });
-            map.setView([y, x], 18);
-          }
-        });
-      }
-    };
+    return null;
   };
-
-  // save field
 
   return (
     <div className="map-layout add-field">
-      {showCard && (
-        <div className="video-overlay">
-          <div className="video-card">
-            <video controls autoPlay className="video-content">
-              <source src="your-video-url.mp4" type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-            <button className="close-button" onClick={() => setShowCard(false)}>
-              ✕
-            </button>
-          </div>
+      <div className="map-header">
+        <div className="back-btn" onClick={() => navigate(-1)}>
+          <LeftArrowIcon />
         </div>
-      )}
-      <div className="map-content">
-        <div className="map-header">
-          <div className="back-btn" onClick={() => navigate(-1)}>
-            <LeftArrowIcon />
-          </div>
-        </div>
-
-        <MapContainer
-          center={[selectedLocation.lat, selectedLocation.lng]}
-          zoom={17}
-          zoomControl={false}
-          className="map-container"
-        >
-          <TileLayer
-            attribution="© Google Satellite"
-            url="http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
-            subdomains={["mt0", "mt1", "mt2", "mt3"]}
-            maxZoom={50}
-          />
-          {markers.map((marker, idx) => (
-            <Marker
-              key={idx}
-              position={[marker.lat, marker.lng]}
-              icon={yellowMarkerIcon}
-            >
-              <Popup>
-                Marker at [{marker.lat.toFixed(4)}, {marker.lng.toFixed(4)}]
-              </Popup>
-            </Marker>
-          ))}
-          {markers.length > 0 && (
-            <Polygon
-              positions={markers.map((marker) => [marker.lat, marker.lng])}
-              color="yellow"
-            />
-          )}
-          <Markers />
-          <SearchField onLocationSelect={setSelectedLocation} />
-          <CurrentLocationButton onLocationFound={setSelectedLocation} />
-        </MapContainer>
-
-        <div className="map-controls">
-          <button onClick={clearMarkers}>
-            <PenIcon />
-          </button>
-        </div>
-
-        <div className="create-farm-container">
-          <button onClick={() => setIsAddingMarkers(!isAddingMarkers)}>
-            {isAddingMarkers ? "Stop Markers" : "Add Markers"}
-          </button>
-          <button onClick={toggleForm}>Save Field</button>
-        </div>
-
-        <AddFieldDetails
-          isOpen={isOpen}
-          toggleForm={toggleForm}
-          fieldCoordinate={markers}
-        />
       </div>
+
+      <MapContainer
+        center={[selectedLocation.lat, selectedLocation.lng]}
+        zoom={17}
+        zoomControl={false}
+        className="map-container"
+      >
+        <TileLayer
+          attribution="© Google Satellite"
+          url="http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+          subdomains={["mt0", "mt1", "mt2", "mt3"]}
+          maxZoom={50}
+        />
+
+        {markers.map((marker, idx) => (
+          <Marker
+            key={idx}
+            position={[marker.lat, marker.lng]}
+            icon={yellowMarkerIcon}
+          >
+            <Popup>
+              Marker at [{marker.lat.toFixed(4)}, {marker.lng.toFixed(4)}]
+            </Popup>
+          </Marker>
+        ))}
+
+        {markers.length > 0 && (
+          <Polygon
+            positions={markers.map((marker) => [marker.lat, marker.lng])}
+            color="yellow"
+          />
+        )}
+
+        <Markers />
+        <SearchField onLocationSelect={setSelectedLocation} />
+        <CurrentLocationButton onLocationFound={setSelectedLocation} />
+      </MapContainer>
+      <div className="map-controls">
+        <button
+          onClick={() => {
+            if (markers.length === 0) {
+              alert("No markers left to remove.");
+            } else {
+              removeLastMarker();
+            }
+          }}
+        >
+          <BackButtonIcon />
+        </button>
+        <button onClick={() => setIsAddingMarkers(!isAddingMarkers)}>
+          <AddFieldIcon />
+        </button>
+        <button onClick={toggleForm}>
+          <SaveIcon />
+        </button>
+        <button onClick={clearMarkers}>
+          <DeleteFieldIcon />
+        </button>
+      </div>
+
+      <AddFieldDetails
+        isOpen={isOpen}
+        toggleForm={toggleForm}
+        fieldCoordinate={markers}
+        setIsSubmitting={setIsSubmitting}
+      />
     </div>
   );
 };

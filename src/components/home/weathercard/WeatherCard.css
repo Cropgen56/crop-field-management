@@ -5,7 +5,7 @@
 }
 .weather-card {
   background: #fff;
-  padding: 0.2rem 1rem;
+  padding: 0.5rem 1rem;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   width: 87%;
@@ -100,6 +100,7 @@
   .weather-card {
     width: 100% !important;
     max-width: 600px;
+    padding: 1rem 1rem;
   }
 
   .temperature strong {

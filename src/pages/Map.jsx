@@ -127,18 +127,3 @@ const Map = () => {
 };
 
 export default Map;
-// return (
-//   <div className="search-bar">
-//     <SearchIcon style={{ cursor: "pointer" }} onClick={handleSearchClick} />
-//     <input
-//       type="text"
-//       placeholder="Search Location"
-//       value={searchQuery}
-//       onChange={handleSearchChange}
-//       onKeyPress={handleSearchKeyPress}
-//       className="search-input"
-//     />
-//     <MicIcon />
-//     {isSearching && <div className="loading-spinner">Searching...</div>}
-//   </div>
-// );
