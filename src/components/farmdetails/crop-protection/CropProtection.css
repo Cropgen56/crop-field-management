@@ -1,0 +1,78 @@
+/* CropProtection.css */
+.pest-control-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #f9f9f9;
+  max-width: 80%;
+  margin: auto;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  margin-top: 1rem;
+  position: relative;
+}
+
+.image-section {
+  flex: 1;
+  margin-right: 16px;
+}
+
+.pest-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.content-section {
+  flex: 2;
+}
+
+.title {
+  margin: 0;
+  margin-bottom: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #075a53;
+}
+
+.description-box {
+  overflow: hidden;
+  max-height: 70px;
+  transition: max-height 0.3s ease;
+  border: 2px solid #075a53;
+  border-radius: 10px;
+  padding: 5px 10px;
+  font-size: 0.7rem;
+  background: linear-gradient(to bottom, #ffffff, #c8f0eb);
+}
+
+.description-box.expanded {
+  max-height: 200px;
+}
+
+.toggle-button {
+  margin-top: 8px;
+  background-color: transparent;
+  border: none;
+  color: #075a53;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.toggle-button:hover {
+  text-decoration: underline;
+}
+
+.pest-control-container::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: #075a53;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}

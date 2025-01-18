@@ -140,6 +140,7 @@ const AddFieldMap = ({ setIsSubmitting }) => {
         style: "bar",
         showMarker: true,
         retainZoomLevel: false,
+        autoComplete: true,
       });
 
       map.addControl(searchControl);
@@ -155,7 +156,11 @@ const AddFieldMap = ({ setIsSubmitting }) => {
       };
     }, [map, onLocationSelect]);
 
-    return null;
+    return (
+      <div className="search-field-container">
+        {/* Search control is added by leaflet-geosearch */}
+      </div>
+    );
   };
 
   return (
@@ -173,8 +178,8 @@ const AddFieldMap = ({ setIsSubmitting }) => {
         className="map-container"
       >
         <TileLayer
-          attribution="© Google Satellite"
-          url="http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+          attribution="© Google Maps"
+          url="http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
           subdomains={["mt0", "mt1", "mt2", "mt3"]}
           maxZoom={50}
         />
@@ -199,7 +204,11 @@ const AddFieldMap = ({ setIsSubmitting }) => {
         )}
 
         <Markers />
-        <SearchField onLocationSelect={setSelectedLocation} />
+        <div className="search-field-container">
+          {" "}
+          <SearchField onLocationSelect={setSelectedLocation} />
+        </div>
+
         <CurrentLocationButton onLocationFound={setSelectedLocation} />
       </MapContainer>
       <div className="map-controls">

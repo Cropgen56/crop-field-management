@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "./WeatherCard.css";
 import {
   LocationIcon,
@@ -10,24 +10,58 @@ import {
   CloudsIcon,
   SunIcon,
 } from "../../../assets/Icons";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchWeather } from "../../../store/weatherSlice";
+import { useEffect } from "react";
+// import { getCurrentLocation } from "../../../utils/getUserCurrectCoordinate";
+// import { getCityState } from "../../../utils/getUserLocation";
+const WeatherCard = () => {
+  // const [location, setLocation] = useState();
+  // const [city, setCity] = useState();
+  // const [state, setState] = useState();
 
-const WeatherCard = ({ weather }) => {
-  // Extracting temperature and converting from Kelvin to Celsius, rounding to nearest whole number
-  const temperatureCelsius = weather?.main?.temp
-    ? Math.round(weather.main.temp - 273.15)
-    : "N/A";
+  // useEffect(() => {
+  //   // Fetch user's current location
+  //   getCurrentLocation({ setLocation });
+  //   // Run when location updates
+  //   if (location) {
+  //     const { latitude, longitude } = location;
 
-  // // Get the weather condition description
-  const weatherCondition = weather?.weather?.[0]?.main?.toLowerCase();
+  //     if (latitude && longitude) {
+  //       getCityState(latitude, longitude)
+  //         .then(({ city, state }) => {
+  //           console.log("called");
 
-  // Map weather conditions to custom icons
-  const getWeatherIcon = () => {
-    if (weatherCondition === "clear") return <SunIcon />;
-    if (weatherCondition === "clouds") return <CloudsIcon />;
-    if (weatherCondition === "rain") return <RainCloudeIcon />;
-    if (weatherCondition === "snow") return <CloudsIcon />;
-    return <SunIcon />;
-  };
+  //           setCity(city);
+  //           setState(state);
+  //           console.log("City:", city, "State:", state);
+  //         })
+  //         .catch((err) => console.error("Error fetching city/state:", err));
+  //     }
+  //   }
+  // }, []);
+
+  const dispatch = useDispatch();
+  const { weatherData, loading, error } = useSelector((state) => state.weather);
+
+  useEffect(() => {
+    dispatch(fetchWeather());
+  }, [dispatch]);
+
+  if (error) return <div>Error: {error}</div>;
+
+  if (!weatherData) {
+    return <div>No weather data available.</div>;
+  }
+
+  const {
+    main: { temp, humidity, pressure },
+    wind: { speed },
+    weather,
+  } = weatherData;
+
+  const condition = weather[0]?.description || "Unknown";
+  const iconCode = weather[0]?.icon;
 
   return (
     <div className="weather-card-container">
@@ -40,10 +74,9 @@ const WeatherCard = ({ weather }) => {
             <p>Weather's Today</p>
           </div>
           <div className="temperature">
+            <SunIcon />
             <strong>
-              {/* <SunIcon /> */}
-              {getWeatherIcon()}
-              {temperatureCelsius}
+              {Math.round(temp)}
               <sup>°</sup>C
             </strong>
           </div>
@@ -52,22 +85,22 @@ const WeatherCard = ({ weather }) => {
         <div className="weather-details">
           <div className="detail">
             <WindIcon />
-            <p>{weather?.wind?.speed || "N/A"} m/s</p>
+            <p>{speed || "N/A"} m/s</p>
             <small>Wind</small>
           </div>
           <div className="detail">
             <HumidityIcon />
-            <p>{weather?.main?.humidity || "N/A"}%</p>
+            <p>{humidity || "N/A"}%</p>
             <small>Humidity</small>
           </div>
           <div className="detail">
             <PressureIcon />
-            <p>{weather?.main?.pressure || "N/A"} hPa</p>
+            <p>{pressure || "N/A"} hPa</p>
             <small>Pressure</small>
           </div>
           <div className="detail">
             <PrecipitationIcon />
-            <p>{weather?.precipitation || "0"} mm</p>
+            <p>{11 || "0"} mm</p>
             <small>Precipitation</small>
           </div>
         </div>

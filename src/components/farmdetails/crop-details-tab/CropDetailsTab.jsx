@@ -46,7 +46,7 @@ const CropDetailsTab = () => {
           <span className="vertical-line">|</span>
           <span>Water Stress Check</span>
           <span className="vertical-line">|</span>
-          <span>Naitrogne Check</span>
+          <span>Nitrogen Check</span>
           <span className="vertical-line">|</span>
           <span>Live Image </span>
         </div>

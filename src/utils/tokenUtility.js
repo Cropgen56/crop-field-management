@@ -6,6 +6,7 @@ export const decodeToken = (token) => {
     const decoded = jwtDecode(token);
     return decoded;
   } catch (error) {
+    console.log(error);
     console.error("Failed to decode token:", error);
   }
 };

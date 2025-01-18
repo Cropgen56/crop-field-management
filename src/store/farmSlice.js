@@ -4,6 +4,7 @@ import axios from "axios";
 // Async thunk for adding a new farm field
 export const addFarmField = createAsyncThunk(
   "farm/addFarmField",
+
   async (
     {
       latlng,
@@ -13,9 +14,11 @@ export const addFarmField = createAsyncThunk(
       sowingDate,
       typeOfIrrigation,
       farmName,
+      acre,
     },
     { rejectWithValue }
   ) => {
+    console.log(acre);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/field/add-field/${userId}`,
@@ -27,9 +30,9 @@ export const addFarmField = createAsyncThunk(
           sowingDate,
           typeOfIrrigation,
           farmName,
+          acre,
         }
       );
-      // console.log(response);
       return response.data;
     } catch (error) {
       return rejectWithValue(

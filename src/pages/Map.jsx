@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
 import "leaflet-geosearch/dist/geosearch.css";
 import "leaflet/dist/leaflet.css";
+import { useDispatch } from "react-redux";
 
 const SearchField = ({ onLocationSelect }) => {
   const map = useMap();
@@ -38,13 +39,13 @@ const CurrentLocationButton = ({ onLocationFound }) => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          console.log("Current Location Coordinates:", latitude, longitude); // Debug log
+          console.log("Current Location Coordinates:", latitude, longitude);
           onLocationFound({
             lat: latitude,
             lng: longitude,
             name: "Your Current Location",
           });
-          map.setView([latitude, longitude], 18); // Center map to current location
+          map.setView([latitude, longitude], 18);
         },
         (error) => {
           console.error("Error getting location:", error);
@@ -53,9 +54,9 @@ const CurrentLocationButton = ({ onLocationFound }) => {
           );
         },
         {
-          enableHighAccuracy: true, // High accuracy mode
-          timeout: 10000, // 10 seconds timeout
-          maximumAge: 0, // Do not use cached location
+          enableHighAccuracy: true,
+          timeout: 10000,
+          maximumAge: 0,
         }
       );
     } else {
@@ -122,6 +123,16 @@ const Map = () => {
       <Marker position={[selectedLocation.lat, selectedLocation.lng]}>
         <Popup>{selectedLocation.name}</Popup>
       </Marker>
+      <iframe
+        width="600"
+        height="450"
+        // style="border:0"
+        loading="lazy"
+        allowfullscreen
+        referrerpolicy="no-referrer-when-downgrade"
+        src="https://www.google.com/maps/embed/v1/place?key=API_KEY
+    &q=Space+Needle,Seattle+WA"
+      ></iframe>
     </MapContainer>
   );
 };

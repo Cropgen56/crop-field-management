@@ -1,0 +1,182 @@
+.farm-details-weather-card {
+  max-width: 400px;
+  background: linear-gradient(145deg, #03221f, #0fc0b1);
+  color: white;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  font-family: Arial, sans-serif;
+}
+
+.farm-details-weather-card .location-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.farm-details-weather-card .main-info {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+  margin: 20px 0;
+}
+
+.farm-details-weather-card .main-info .temp {
+  font-size: 48px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+}
+.farm-details-weather-card .main-info strong {
+  padding-left: 5px;
+}
+
+.farm-details-weather-card .main-info .temp span {
+  font-size: 24px;
+}
+
+.farm-details-weather-card .main-info .condition {
+  font-size: 18px;
+  color: #d3cfcf;
+}
+
+.farm-details-weather-card .stats {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+}
+
+.farm-details-weather-card .stat {
+  text-align: center;
+  display: flex;
+  background-color: black;
+}
+
+.farm-details-weather-card .stat .icon {
+  margin-bottom: 4px;
+  font-size: 20px;
+}
+
+.farm-details-weather-card .week-forecast {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  padding-bottom: 10px;
+}
+
+.farm-details-weather-card .week-forecast::-webkit-scrollbar {
+  height: 8px;
+}
+
+.farm-details-weather-card .week-forecast::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+}
+
+.farm-details-weather-card .week-forecast .day {
+  text-align: center;
+  padding: 15px 10px;
+  flex: 0 0 80px;
+  border-radius: 8px;
+}
+.farm-details-weather-card .week-forecast .icon {
+  display: flex;
+  align-items: center;
+  padding: 15px 0;
+}
+.farm-details-weather-card .week-forecast .selected {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+.farm-details-weather-card .day-name {
+  font-weight: bold;
+}
+
+.farm-details-weather-card .temp {
+  margin: 4px 0;
+}
+
+.farm-details-weather-card .precipitation {
+  font-size: 12px;
+  opacity: 0.8;
+}
+.farm-details-weather-card .week-forecast .day .temp {
+  padding-left: 5px;
+  color: #01413c;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.farm-details-weather-card .week-forecast .day .precipitation {
+  /* color: #9a9898; */
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .farm-details-weather-card {
+    padding: 12px;
+    max-width: 350px;
+    margin: auto;
+    margin-top: 1rem;
+  }
+
+  .farm-details-weather-card .main-info {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    margin: 5px 0;
+    padding: 0px;
+  }
+  .farm-details-weather-card .location-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .farm-details-weather-card .location-header .location {
+    display: flex;
+    align-items: center;
+  }
+  .farm-details-weather-card .location-header .location span {
+    padding-left: 5px;
+  }
+  .farm-details-weather-card .main-info .temp {
+    font-size: 36px;
+  }
+
+  .farm-details-weather-card .stats {
+    flex-wrap: wrap;
+  }
+
+  .farm-details-weather-card .stat {
+    width: 40%;
+    margin-top: 0.8rem;
+    background-color: #4ab7ae;
+    padding: 15px 10px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: #fff !important;
+    border-radius: 10px;
+    text-align: start;
+  }
+
+  .farm-details-weather-card .stat .label {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  .farm-details-weather-card .stat .value {
+    font-size: 0.8rem;
+    padding-top: 2px;
+  }
+  .farm-details-weather-card .week-forecast .day {
+    width: 10vw;
+  }
+  .farm-details-weather-card .week-forecast .selected {
+    border-radius: 8px;
+    color: white !important;
+  }
+}

@@ -4,8 +4,6 @@ import Header from "../components/home/header/Header";
 import WeatherCard from "../components/home/weathercard/WeatherCard";
 import NavigationBar from "../components/home/navigationbar/NavigationBar";
 import { getCurrentLocation } from "../utils/getUserCurrectCoordinate";
-import { getWeatherData } from "../utils/getWeatherData";
-// import CommunitySection from "../components/home/communitysection/CommunitySection";
 import MyFarm from "../components/home/myfarm/MyFarm";
 import "../style/Home.css";
 import { registerUser } from "../store/authSlice";
@@ -16,58 +14,38 @@ import { getFarmFields } from "../store/farmSlice";
 const Home = () => {
   const dispatch = useDispatch();
 
-  // Get the token from the URL
-  function getQueryParams() {
+  // Extract token and register user
+  useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
-    return queryParams.get("token");
-  }
+    const token = queryParams.get("token");
 
-  const token = getQueryParams();
-  if (token) localStorage.setItem("accessToken", token);
-
-  const userData = decodeToken(localStorage.getItem("accessToken")) || {};
-  const [location, setLocation] = useState({ latitude: null, longitude: null });
-  const [weather, setWeather] = useState({});
-  const [error, setError] = useState(null);
-
-  // Register or log in the user
-  useEffect(() => {
-    if (userData) {
-      dispatch(registerUser(userData));
+    if (token) {
+      localStorage.setItem("accessToken", token);
+      const userData = decodeToken(token);
+      if (userData && Object.keys(userData)?.length > 0) {
+        dispatch(registerUser(userData));
+      }
     }
-  }, [dispatch, userData]);
+  }, [dispatch]);
 
-  // Get the current location of the user
-  useEffect(() => {
-    getCurrentLocation({ setLocation, setError });
-  }, []);
+  // Fetch user details from Redux store
+  const authState = useSelector((state) => state?.auth);
+  const { user: registeredUser } = authState;
 
-  // Get the weather data from the OpenWeather API
+  // Fetch farms using stored user data
   useEffect(() => {
-    if (location.latitude && location.longitude) {
-      getWeatherData({ location })
-        .then((res) => {
-          setWeather(res);
-        })
-        .catch((err) => {
-          setError(err.message);
-        });
+    const userDetails = JSON.parse(localStorage.getItem("userData")) || {};
+
+    if (userDetails?._id) {
+      dispatch(getFarmFields(userDetails?._id));
     }
-  }, [location]);
+  }, [dispatch]);
 
-  const userDataJon = JSON.parse(localStorage.getItem("userData")) || {};
-
-  // Get user's farms
-  useEffect(() => {
-    if (userDataJon?._id) {
-      dispatch(getFarmFields(userDataJon._id));
-    }
-  }, []);
-
+  // Retrieve farm data from Redux store
   const farmState = useSelector((state) => state?.farm);
   const { fields = [], status } = farmState || {};
 
-  // Handle loading and error states
+  // Handle loading state
   if (status === "loading") {
     return <Loading />;
   }
@@ -75,10 +53,9 @@ const Home = () => {
   return (
     <div className="home-page-main-container">
       <div>
-        <Header />
-        <WeatherCard weather={weather} />
+        <Header userDetails={registeredUser || {}} />
+        <WeatherCard />
         <MyFarm fields={fields} />
-        {/* <CommunitySection /> */}
         <NavigationBar />
       </div>
     </div>

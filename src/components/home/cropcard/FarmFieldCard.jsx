@@ -4,7 +4,7 @@ import { ArrowIcon } from "../../../assets/Icons";
 import { useNavigate } from "react-router-dom";
 import farmImage from "../../../assets/Images/farm-field.png";
 
-const FarmFieldCard = ({ cropName, fieldSize, farmDetails }) => {
+const FarmFieldCard = ({ cropName, farmDetails, acre }) => {
   const navigate = useNavigate();
   return (
     <div
@@ -17,7 +17,7 @@ const FarmFieldCard = ({ cropName, fieldSize, farmDetails }) => {
       <div className="farm-field-card-content">
         <div>
           <p>{cropName}</p>
-          <small>**{fieldSize}</small>
+          <small>acre : {acre?.toFixed(2)}</small>
         </div>
         <div className="add-field-button">
           {" "}

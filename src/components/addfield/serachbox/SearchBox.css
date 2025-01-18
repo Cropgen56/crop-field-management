@@ -1,0 +1,51 @@
+/* Custom style for search box */
+.leaflet-bar .geosearch-bar {
+  border-radius: 30px;
+  background-color: #f0f0f0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add a shadow for visibility */
+}
+
+.leaflet-bar .geosearch-bar input {
+  width: 100%;
+  height: 40px;
+  padding: 10px;
+  border-radius: 30px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+.leaflet-bar .geosearch-bar button {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #075a53;
+  border: none;
+  color: #fff;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.leaflet-bar .geosearch-bar button:hover {
+  background-color: #4a8f7d;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .leaflet-bar .geosearch-bar {
+    width: 90%;
+    top: 5vh; /* Adjust position for smaller screens */
+  }
+
+  .leaflet-bar .geosearch-bar input {
+    height: 35px;
+    font-size: 14px;
+  }
+
+  .leaflet-bar .geosearch-bar button {
+    padding: 6px;
+  }
+}

@@ -18,9 +18,7 @@ const CropHealth = ({ farmDetails }) => {
       },
     ],
   };
-  const corrdinatesPoint = farmDetails?.field;
 
-  let totalArea;
   //  Calculate days from dates
   function calculateDaysFromDate(input) {
     const targetDate = new Date(input);
@@ -34,22 +32,6 @@ const CropHealth = ({ farmDetails }) => {
     const timeDifference = currentDate - targetDate;
     const daysDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
     return daysDifference;
-  }
-
-  // Calculate area based on coordinates
-  const calculateArea = (corrdinatesPoint) => {
-    const coordinates = farmDetails?.field?.map((point) => [
-      point.lng,
-      point.lat,
-    ]);
-    coordinates.push(coordinates[0]);
-    const polygon = turf.polygon([coordinates]);
-    const area = turf.area(polygon);
-    totalArea = area / 4046.86; // Convert to acres
-  };
-
-  if (corrdinatesPoint) {
-    calculateArea(corrdinatesPoint);
   }
 
   return (
@@ -93,20 +75,20 @@ const CropHealth = ({ farmDetails }) => {
                   <th>
                     <strong>Total Area</strong>
                   </th>
-                  <td>:- {totalArea?.toFixed(2) + " Acre"}</td>
+                  <td>:- {farmDetails?.acre?.toFixed(2) + " Acre"}</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           {/* Doughnut Chart */}
-          <div className="chart-container">
+          <div className="doughtnut-chart-container">
             <Doughnut
               data={data}
               options={{
                 responsive: true,
                 maintainAspectRatio: false,
-                cutout: "70%",
+                cutout: "60%",
                 plugins: {
                   tooltip: {
                     enabled: false,
