@@ -55,6 +55,11 @@
   background: #0056b3;
 }
 
+.arrow-buttons {
+  display: flex;
+  justify-content: space-between;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .card {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BarChart,
   Bar,
@@ -9,26 +9,45 @@ import {
   Legend,
 } from "recharts";
 import "./SoilHealthCard.css";
-import soilTemperatureImage from "../../../assets/Images/soil-temperature.png";
 
-const data = [
-  { nutrient: "N", current: 23.4, lastYear: 15.6, label: "Nitrogen" },
-  { nutrient: "P", current: 28.1, lastYear: 12.5, label: "Phosphorous" },
-  { nutrient: "K", current: 20.4, lastYear: 8.1, label: "Potassium" },
-];
+const SoilHealthCard = ({ npkData }) => {
+  const data = [
+    {
+      nutrient: "N",
+      current: npkData?.NPK_Available_kg?.N,
+      require: npkData?.NPK_Required_at_Stage_kg?.N,
+      label: "Nitrogen",
+    },
+    {
+      nutrient: "P",
+      current: npkData?.NPK_Available_kg?.P,
+      require: npkData?.NPK_Required_at_Stage_kg?.P,
+      label: "Phosphorous",
+    },
+    {
+      nutrient: "K",
+      current: npkData?.NPK_Available_kg?.K,
+      require: npkData?.NPK_Required_at_Stage_kg?.K,
+      label: "Potassium",
+    },
+  ];
 
-const SoilHealthCard = () => {
+  // Prevent rendering of bars with negative values by default
+  const formattedData = data.map((item) => ({
+    ...item,
+    current: item.current < 0 ? null : item.current,
+    require: item.require < 0 ? null : item.require,
+  }));
+
   return (
     <div className="soil-health-card-main-container">
-      {" "}
       <div className="soil-analysis-chart-container">
         <ResponsiveContainer width="100%" height={180}>
           <BarChart
-            data={data}
+            data={formattedData}
             layout="vertical"
             margin={{ top: 0, right: 30, bottom: 5, left: -5 }}
           >
-            {/* Hide Cartesian Gridlines */}
             <XAxis type="number" hide />
             <YAxis
               type="category"
@@ -37,7 +56,9 @@ const SoilHealthCard = () => {
               tickLine={false}
               tick={(props) => {
                 const { x, y, payload } = props;
-                const nutrient = data.find((d) => d.nutrient === payload.value);
+                const nutrient = formattedData.find(
+                  (d) => d.nutrient === payload.value
+                );
                 return (
                   <foreignObject x={x - 50} y={y - 20} width={40} height={40}>
                     <div className="y-axis-label">
@@ -48,7 +69,7 @@ const SoilHealthCard = () => {
               }}
             />
             <Tooltip cursor={{ fill: "rgba(0, 0, 0, 0.1)" }} />
-            {/* <Legend align="right" verticalAlign="top" iconType="line" /> */}
+
             <Bar
               dataKey="current"
               fill="#36A534"
@@ -66,7 +87,7 @@ const SoilHealthCard = () => {
               }}
             />
             <Bar
-              dataKey="lastYear"
+              dataKey="require"
               fill="#C4E930"
               barSize={4}
               name="Required"
@@ -76,15 +97,26 @@ const SoilHealthCard = () => {
                 fill: "#A2A2A2",
                 formatter: (value) => `${value}`,
                 style: {
-                  fontSize: "7px",
+                  fontSize: "9px",
                   fontWeight: "bold",
                 },
+              }}
+            />
+
+            {/* Add the Legend here */}
+            <Legend
+              layout="horizontal"
+              align="right"
+              verticalAlign="top"
+              wrapperStyle={{
+                paddingTop: "0px",
+                paddingRight: "0px",
               }}
             />
           </BarChart>
         </ResponsiveContainer>
         <div className="nutrient-names">
-          {data.map((item, index) => (
+          {formattedData.map((item, index) => (
             <div
               key={index}
               className={`nutrient-name nutrient-${item.nutrient}`}
@@ -92,27 +124,6 @@ const SoilHealthCard = () => {
               {item.label}
             </div>
           ))}
-        </div>
-      </div>
-      <div className="soil-info">
-        <div className="soil-stat">
-          <div className="icon-container">
-            <img src={soilTemperatureImage} alt="" />
-          </div>
-          <div className="data-container">
-            <p>Soil Moisture</p>
-            <strong>40%</strong>
-          </div>
-        </div>
-        <div className="soil-stat">
-          <div className="icon-container">
-            <img src={soilTemperatureImage} alt="" />
-          </div>
-          <div className="data-container">
-            {" "}
-            <p>Soil Temperature</p>
-            <strong>24°C</strong>
-          </div>
         </div>
       </div>
     </div>

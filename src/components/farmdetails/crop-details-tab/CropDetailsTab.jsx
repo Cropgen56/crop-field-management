@@ -1,46 +1,85 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { ndviAPI, socAPI } from "../../../api/satelliteAPI";
 import "./CropDetailsTab.css";
+import { useDispatch, useSelector } from "react-redux";
+import { setSelectedIndex } from "../../../store/satelliteSlice";
 
-const CropDetailsTab = () => {
-  const year = 2025;
+const CropDetailsTab = ({ farmDetails }) => {
+  const dispatch = useDispatch();
+  const selectedIndex = useSelector((state) => state.satellite.selectedIndex);
 
-  // Function to generate all dates of the year
-  const generateYearDates = (year) => {
-    const dates = [];
-    const startDate = new Date(year, 0, 1);
-    const endDate = new Date(year, 11, 31);
-    const currentDate = new Date();
-
-    // Loop through the year dates
-    for (
-      let date = startDate;
-      date < currentDate && date <= endDate;
-      date.setDate(date.getDate() + 1)
-    ) {
-      dates.push(new Date(date));
+  const [socData, setSocData] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("socData")) || null;
+    } catch {
+      return null;
     }
+  });
 
-    return dates;
-  };
+  const [ndviData, setNdviData] = useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem("ndviData")) || null;
+    } catch {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    if (!farmDetails) return;
+
+    const fetchData = async () => {
+      try {
+        const [socResponse, ndviResponse] = await Promise.all([
+          socAPI({ farmDetails }),
+          ndviAPI({ farmDetails, selectedDate: null }),
+        ]);
+
+        if (socResponse) {
+          setSocData(socResponse);
+          localStorage.setItem("socData", JSON.stringify(socResponse));
+        }
+
+        if (ndviResponse) {
+          setNdviData(ndviResponse);
+          localStorage.setItem("ndviData", JSON.stringify(ndviResponse));
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [farmDetails]);
 
   const formatDate = (date) => {
     const options = { day: "2-digit", month: "short", year: "numeric" };
     return new Intl.DateTimeFormat("en-US", options).format(date);
   };
 
-  const yearDates = generateYearDates(year);
+  const changeIndex = (index) => dispatch(setSelectedIndex(index));
 
-  // Get today's date for comparison
-  const today = new Date();
-  const todayFormatted = formatDate(today);
+  const handleDateClick = async (date) => {
+    try {
+      const response = await ndviAPI({ farmDetails, selectedDate: date });
+      if (response) {
+        console.error(response);
+        setNdviData(response);
+        localStorage.setItem("ndviData", JSON.stringify(response));
+      }
+    } catch (error) {
+      console.error("Error fetching NDVI data for date:", error);
+    }
+  };
+
+  const todayFormatted = formatDate(new Date());
 
   return (
     <div className="responsive-table">
       <div className="table-header-wrapper">
         <div className="table-header">
-          <span>Crop Health Check</span>{" "}
+          <span onClick={() => changeIndex("ndvi")}>Crop Health Check</span>
           <span className="vertical-line">|</span>
-          <span>Soil Organic Carbon</span>
+          <span onClick={() => changeIndex("soc")}>Soil Organic Carbon</span>
           <span className="vertical-line">|</span>
           <span>Moisture Stress Check</span>
           <span className="vertical-line">|</span>
@@ -48,21 +87,29 @@ const CropDetailsTab = () => {
           <span className="vertical-line">|</span>
           <span>Nitrogen Check</span>
           <span className="vertical-line">|</span>
-          <span>Live Image </span>
+          <span>Live Image</span>
         </div>
       </div>
-      <div className="table-content">
-        {yearDates.map((date, index) => {
-          const formattedDate = formatDate(date);
-          const isToday = formattedDate === todayFormatted;
 
-          return (
-            <div key={index} className={`date-item ${isToday ? "today" : ""}`}>
-              {formattedDate}
-            </div>
-          );
-        })}
-      </div>
+      {selectedIndex === "ndvi" && ndviData ? (
+        <div className="table-content visible">
+          {ndviData.all_dates_with_cloud_percentage?.map((item, index) => {
+            const formattedDate = formatDate(new Date(item.date));
+            const isToday = formattedDate === todayFormatted;
+
+            return (
+              <div
+                key={index}
+                className={`date-item ${isToday ? "today" : ""}`}
+                onClick={() => handleDateClick(item.date)}
+              >
+                <div>{formattedDate}</div>
+                <div>Cloud Percentage: {item.cloud_percentage}%</div>
+              </div>
+            );
+          })}
+        </div>
+      ) : null}
     </div>
   );
 };

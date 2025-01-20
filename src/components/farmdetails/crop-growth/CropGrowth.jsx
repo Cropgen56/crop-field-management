@@ -11,7 +11,7 @@ import {
 
 import "./CropGrowth.css";
 
-const CropGrowth = () => {
+const CropGrowth = ({ farmDetails, npkData }) => {
   const data = [
     { week: "Week 1", height: 1 },
     { week: "Week 2", height: 2 },
@@ -32,7 +32,7 @@ const CropGrowth = () => {
         <div className="heading-container">
           {" "}
           {/* <h2 className="header-title">Plant Growth Activity</h2> */}
-          <div className="subheader-text">Wheat</div>
+          <div className="subheader-text">{farmDetails?.cropName}</div>
         </div>
         {/* <div className="dropdown-container">
           <div className="custom-dropdown">
@@ -103,7 +103,7 @@ const CropGrowth = () => {
               stroke="#4B970F"
               fillOpacity={1}
               fill="url(#colorHeight)"
-              name="Plant Height (cm)"
+              name={npkData?.Crop_Growth_Stage}
             />
           </AreaChart>
         </ResponsiveContainer>

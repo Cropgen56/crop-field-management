@@ -1,0 +1,37 @@
+@media screen and (max-width: 768px) {
+  .soil-info {
+    width: 90%;
+    display: flex;
+    margin: auto;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  .soil-stat {
+    background-color: #0b8a80;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    border-radius: 10px;
+    padding: 10px;
+  }
+  .soil-stat .icon-container img {
+    height: 50px;
+    width: 50px;
+  }
+  .soil-stat .icon-container {
+    width: 40%;
+  }
+  .soil-stat .data-container {
+    text-align: center;
+    width: 100%;
+  }
+  .soil-stat .data-container p {
+    font-size: 0.7rem;
+    color: #fff;
+  }
+  .soil-stat .data-container strong {
+    color: #fff;
+  }
+}

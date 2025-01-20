@@ -90,7 +90,7 @@
     max-width: 100%;
     background-color: #075a53;
     position: absolute;
-    margin-top: 200px;
+    margin-top: 250px;
     z-index: 1000;
   }
 
@@ -120,5 +120,21 @@
     overflow-x: auto;
     font-size: 1rem;
     padding: 8px;
+  }
+  .table-content {
+    transition: opacity 0.3s ease, max-height 0.3s ease;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+
+  .table-content.visible {
+    opacity: 1;
+    max-height: 100vh;
+  }
+
+  .table-content.hide {
+    display: none;
+    opacity: 0;
+    max-height: 0;
   }
 }

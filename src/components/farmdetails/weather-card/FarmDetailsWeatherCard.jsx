@@ -129,7 +129,7 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
         </div>
         <div className="stat">
           <div>
-            <div className="label">Precipitin</div>
+            <div className="label">Precipitation</div>
             <div className="value">0 mm</div>
           </div>
 

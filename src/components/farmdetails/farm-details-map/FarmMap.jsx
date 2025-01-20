@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from "react";
-import nvdiImage from "../../../assets/Images/farm-nvdi-image.png";
 import {
   MapContainer,
   TileLayer,
@@ -10,56 +9,115 @@ import {
 import "leaflet/dist/leaflet.css";
 import "./FarmMap.css";
 import CropDetailsTab from "../crop-details-tab/CropDetailsTab";
+import { useSelector } from "react-redux";
 
 const FarmMap = ({ farmDetails }) => {
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
+  const [polygonBounds, setPolygonBounds] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [image, setImage] = useState(null);
+
+  const vagitationIndex = useSelector((state) => state.satellite.selectedIndex);
 
   const mapRef = useRef(null);
   const polygonCoordinates = farmDetails?.field || [];
 
-  // Calculate the centroid of the polygon
-  function calculatePolygonCentroid(coordinates) {
+  // Utility function to safely parse JSON
+  const parseJSON = (data) => {
+    try {
+      return JSON.parse(data);
+    } catch (error) {
+      console.error("Invalid JSON data:", data, error);
+      return null;
+    }
+  };
+
+  // Sync selectedIndex with vagitationIndex from Redux
+  useEffect(() => {
+    setSelectedIndex(vagitationIndex);
+  }, [vagitationIndex]);
+
+  // Load image based on selectedIndex
+  useEffect(() => {
+    if (!selectedIndex) {
+      setImage(null);
+      return;
+    }
+
+    const dataKey =
+      selectedIndex === "soc"
+        ? "socData"
+        : selectedIndex === "ndvi"
+        ? "ndviData"
+        : null;
+    if (dataKey) {
+      const rawData = localStorage.getItem(dataKey);
+      const parsedData = parseJSON(rawData);
+      const base64_image =
+        selectedIndex === "soc"
+          ? parsedData?.base64_image
+          : parsedData?.dense_ndvi_image;
+
+      setImage(base64_image ? `data:image/png;base64,${base64_image}` : null);
+    } else {
+      setImage(null);
+    }
+  }, [selectedIndex]);
+
+  // Calculate polygon centroid
+  const calculatePolygonCentroid = (coordinates) => {
+    if (coordinates.length < 3) return { centroidLat: null, centroidLng: null }; // Not a valid polygon
+
     let sumX = 0;
     let sumY = 0;
     let area = 0;
 
-    const n = coordinates.length;
-    for (let i = 0; i < n; i++) {
-      const { lat: x1, lng: y1 } = coordinates[i];
-      const { lat: x2, lng: y2 } = coordinates[(i + 1) % n];
-      const crossProduct = x1 * y2 - x2 * y1;
+    coordinates.forEach((current, i) => {
+      const next = coordinates[(i + 1) % coordinates.length];
+      const crossProduct = current.lat * next.lng - next.lat * current.lng;
       area += crossProduct;
-      sumX += (x1 + x2) * crossProduct;
-      sumY += (y1 + y2) * crossProduct;
-    }
+      sumX += (current.lat + next.lat) * crossProduct;
+      sumY += (current.lng + next.lng) * crossProduct;
+    });
 
-    area = area / 2;
-    const centroidX = sumX / (6 * area);
-    const centroidY = sumY / (6 * area);
-    return { centroidLat: centroidX, centroidLng: centroidY };
-  }
+    area /= 2;
+    return {
+      centroidLat: sumX / (6 * area),
+      centroidLng: sumY / (6 * area),
+    };
+  };
 
+  // Calculate polygon bounds
+  const calculatePolygonBounds = (coordinates) => {
+    if (coordinates.length === 0) return null;
+
+    const lats = coordinates.map(({ lat }) => lat);
+    const lngs = coordinates.map(({ lng }) => lng);
+
+    return [
+      [Math.min(...lats), Math.min(...lngs)],
+      [Math.max(...lats), Math.max(...lngs)],
+    ];
+  };
+
+  // Set map centroid and bounds when polygonCoordinates change
   useEffect(() => {
     if (polygonCoordinates.length > 0) {
       const { centroidLat, centroidLng } =
         calculatePolygonCentroid(polygonCoordinates);
       setLat(centroidLat);
       setLng(centroidLng);
+      setPolygonBounds(calculatePolygonBounds(polygonCoordinates));
     }
   }, [polygonCoordinates]);
 
-  const imageBounds = [
-    [20.13734214241536, 77.13630795478822],
-    [20.136022576055755, 77.13800311088563],
-  ];
-
+  // Handle map events
   const MapEvents = () => {
     useMapEvents({
       click(e) {
-        const { lat, lng } = e.latlng;
-        setLat(lat);
-        setLng(lng);
+        setLat(e.latlng.lat);
+        setLng(e.latlng.lng);
       },
     });
     return null;
@@ -82,21 +140,23 @@ const FarmMap = ({ farmDetails }) => {
             maxZoom={50}
           />
           <Polygon
-            pathOptions={{ fillColor: "green" }}
+            pathOptions={{ fillColor: "transparent", fillOpacity: 0 }}
             positions={polygonCoordinates.map(({ lat, lng }) => [lat, lng])}
           />
-          <ImageOverlay
-            url={nvdiImage}
-            bounds={imageBounds}
-            opacity={1}
-            className="farm-map__image-overlay"
-          />
+          {polygonBounds && image && (
+            <ImageOverlay
+              url={image}
+              bounds={polygonBounds}
+              opacity={1}
+              className="farm-map__image-overlay"
+            />
+          )}
           <MapEvents />
         </MapContainer>
       ) : (
         <div>Loading Map...</div>
       )}
-      <CropDetailsTab />
+      <CropDetailsTab farmDetails={farmDetails} />
     </div>
   );
 };

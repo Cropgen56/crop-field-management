@@ -11,7 +11,7 @@
 }
 
 @media (max-width: 768px) {
-  .crop-advisory-heading {
+  .section-heading {
     font-size: 1.3rem;
     font-weight: 600;
     color: #075a53;
