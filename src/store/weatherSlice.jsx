@@ -1,17 +1,15 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const CITY = "Umarkhed";
-const STATE = "Maharashtra";
 const UNITS = "metric";
 
 // Async thunk for fetching current weather data
 export const fetchWeather = createAsyncThunk(
   "weather/fetchWeather",
-  async (_, { rejectWithValue }) => {
+  async ({ city, state }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${CITY},${STATE},IN&units=${UNITS}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`
+        `https://api.openweathermap.org/data/2.5/weather?q=${city},${state},IN&units=${UNITS}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`
       );
       return response.data;
     } catch (error) {

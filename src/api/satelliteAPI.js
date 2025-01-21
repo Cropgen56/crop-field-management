@@ -127,7 +127,10 @@ export const socAPI = async ({ farmDetails }) => {
   };
 
   try {
-    const response = await axios.post("http://127.0.0.1:8000/soc", payload);
+    const response = await axios.post(
+      `${process.env.REACT_APP_SATELLITE_API}/soc`,
+      payload
+    );
 
     return response.data;
   } catch (error) {
@@ -146,7 +149,7 @@ export const ndviAPI = async ({ farmDetails, selectedDate }) => {
   startDateObj.setMonth(startDateObj.getMonth() - 6);
   const startDate = startDateObj.toISOString().split("T")[0];
 
-  const coordinates = [field.map(({ lat, lng }) => [lat, lng])];
+  const coordinates = [field.map(({ lat, lng }) => [lng, lat])];
 
   const payload = {
     start_date: startDate,
@@ -155,7 +158,10 @@ export const ndviAPI = async ({ farmDetails, selectedDate }) => {
   };
 
   try {
-    const response = await axios.post("http://127.0.0.1:8000/ndvi", payload);
+    const response = await axios.post(
+      `${process.env.REACT_APP_SATELLITE_API}/ndvi`,
+      payload
+    );
 
     return response.data;
   } catch (error) {

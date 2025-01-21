@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./WeatherCard.css";
 import {
   LocationIcon,
@@ -7,52 +7,47 @@ import {
   HumidityIcon,
   PressureIcon,
   PrecipitationIcon,
-  CloudsIcon,
   SunIcon,
 } from "../../../assets/Icons";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWeather } from "../../../store/weatherSlice";
-import { useEffect } from "react";
-// import { getCurrentLocation } from "../../../utils/getUserCurrectCoordinate";
-// import { getCityState } from "../../../utils/getUserLocation";
+import { getCurrentLocation } from "../../../utils/getUserCurrectCoordinate";
+import { getCityState } from "../../../utils/getUserLocation";
+
 const WeatherCard = () => {
-  // const [location, setLocation] = useState();
-  // const [city, setCity] = useState();
-  // const [state, setState] = useState();
-
-  // useEffect(() => {
-  //   // Fetch user's current location
-  //   getCurrentLocation({ setLocation });
-  //   // Run when location updates
-  //   if (location) {
-  //     const { latitude, longitude } = location;
-
-  //     if (latitude && longitude) {
-  //       getCityState(latitude, longitude)
-  //         .then(({ city, state }) => {
-  //           console.log("called");
-
-  //           setCity(city);
-  //           setState(state);
-  //           console.log("City:", city, "State:", state);
-  //         })
-  //         .catch((err) => console.error("Error fetching city/state:", err));
-  //     }
-  //   }
-  // }, []);
+  const [location, setLocation] = useState(null);
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
 
   const dispatch = useDispatch();
   const { weatherData, loading, error } = useSelector((state) => state.weather);
+  console.log(weatherData);
 
   useEffect(() => {
-    dispatch(fetchWeather());
+    // Fetch user's current location and update city/state
+    getCurrentLocation({
+      setLocation: (loc) => {
+        setLocation(loc);
+        if (loc?.latitude && loc?.longitude) {
+          getCityState({
+            lat: loc.latitude,
+            lng: loc.longitude,
+            setCity,
+            setState,
+          });
+        }
+      },
+    });
+  }, []);
+
+  useEffect(() => {
+    // Fetch weather data when component mounts
+    dispatch(fetchWeather({ city, state }));
   }, [dispatch]);
 
   if (error) return <div>Error: {error}</div>;
-
-  if (!weatherData) {
-    return <div>No weather data available.</div>;
-  }
+  if (loading) return <div>Loading...</div>;
+  if (!weatherData) return <div>No weather data available.</div>;
 
   const {
     main: { temp, humidity, pressure },
@@ -69,7 +64,8 @@ const WeatherCard = () => {
         <div className="location-container">
           <div className="location">
             <h5>
-              <LocationIcon /> Pune, Maharashtra
+              <LocationIcon /> {city || "Unknown City"},{" "}
+              {state || "Unknown State"}
             </h5>
             <p>Weather's Today</p>
           </div>
@@ -100,7 +96,7 @@ const WeatherCard = () => {
           </div>
           <div className="detail">
             <PrecipitationIcon />
-            <p>{11 || "0"} mm</p>
+            <p>{0 || "0"} mm</p>
             <small>Precipitation</small>
           </div>
         </div>

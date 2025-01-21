@@ -3,9 +3,10 @@ import "./Header.css";
 import { ProfileIcon } from "../../../assets/Icons";
 import bannerimage from "../../../assets/Images/backgroundbanner.png";
 import farmerimage from "../../../assets/Images/farmerimage.png";
-import { useSelector } from "react-redux";
 
-const Header = ({ userDetails }) => {
+const Header = () => {
+  const userDetails = JSON.parse(localStorage.getItem("userData")) || {};
+
   return (
     <div className="header">
       <img src={bannerimage} alt="banner image" className="banner-image" />

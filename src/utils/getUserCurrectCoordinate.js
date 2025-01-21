@@ -4,8 +4,8 @@ export const getCurrentLocation = ({ setLocation }) => {
       (position) => {
         if (position?.coords) {
           setLocation({
-            latitude: position?.coords?.latitude,
-            longitude: position?.coords?.longitude,
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
           });
         } else {
           console.error("Position coordinates are undefined.");
@@ -13,7 +13,8 @@ export const getCurrentLocation = ({ setLocation }) => {
       },
       (err) => {
         console.error("Error fetching location:", err.message);
-      }
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   } else {
     console.error("Geolocation is not supported by this browser.");

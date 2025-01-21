@@ -10,6 +10,7 @@ import "leaflet/dist/leaflet.css";
 import "./FarmMap.css";
 import CropDetailsTab from "../crop-details-tab/CropDetailsTab";
 import { useSelector } from "react-redux";
+import Loading from "../../common/Loading/Loading";
 
 const FarmMap = ({ farmDetails }) => {
   const [lat, setLat] = useState(null);
@@ -17,6 +18,7 @@ const FarmMap = ({ farmDetails }) => {
   const [polygonBounds, setPolygonBounds] = useState(null);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [image, setImage] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const vagitationIndex = useSelector((state) => state.satellite.selectedIndex);
 
@@ -67,7 +69,7 @@ const FarmMap = ({ farmDetails }) => {
 
   // Calculate polygon centroid
   const calculatePolygonCentroid = (coordinates) => {
-    if (coordinates.length < 3) return { centroidLat: null, centroidLng: null }; // Not a valid polygon
+    if (coordinates.length < 3) return { centroidLat: null, centroidLng: null };
 
     let sumX = 0;
     let sumY = 0;
@@ -95,10 +97,10 @@ const FarmMap = ({ farmDetails }) => {
     const lats = coordinates.map(({ lat }) => lat);
     const lngs = coordinates.map(({ lng }) => lng);
 
-    return [
-      [Math.min(...lats), Math.min(...lngs)],
-      [Math.max(...lats), Math.max(...lngs)],
-    ];
+    const southWest = [Math.min(...lats), Math.min(...lngs)];
+    const northEast = [Math.max(...lats), Math.max(...lngs)];
+
+    return [southWest, northEast];
   };
 
   // Set map centroid and bounds when polygonCoordinates change
@@ -133,6 +135,11 @@ const FarmMap = ({ farmDetails }) => {
           className="farm-map__map-container"
           whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
         >
+          {loading && (
+            <div className="farm-map__spinner-overlay">
+              <Loading />
+            </div>
+          )}
           <TileLayer
             attribution="© Google Maps"
             url="http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
@@ -148,7 +155,7 @@ const FarmMap = ({ farmDetails }) => {
               url={image}
               bounds={polygonBounds}
               opacity={1}
-              className="farm-map__image-overlay"
+              interactive={true}
             />
           )}
           <MapEvents />
@@ -156,7 +163,7 @@ const FarmMap = ({ farmDetails }) => {
       ) : (
         <div>Loading Map...</div>
       )}
-      <CropDetailsTab farmDetails={farmDetails} />
+      <CropDetailsTab farmDetails={farmDetails} setLoading={setLoading} />
     </div>
   );
 };
