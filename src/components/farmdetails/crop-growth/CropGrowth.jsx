@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   AreaChart,
   Area,
   XAxis,
-  YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
@@ -26,31 +25,72 @@ const CropGrowth = ({ farmDetails, npkData }) => {
     { week: "Week 11", height: 6 },
   ];
 
+  const [activeIndex, setActiveIndex] = useState(4);
+
+  function calculateWeeksFromStartDate(startDate) {
+    const start = new Date(startDate);
+    const end = new Date();
+
+    const diffInMs = end - start;
+
+    const weeks = diffInMs / (1000 * 60 * 60 * 24 * 7);
+
+    return Math.floor(weeks);
+  }
+
+  // Inline Custom Tooltip
+  const renderCustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const weeks = calculateWeeksFromStartDate(farmDetails?.sowingDate);
+
+      return (
+        <div
+          style={{
+            backgroundColor: "#fff",
+            border: "1px solid #4B970F",
+            borderRadius: "8px",
+            padding: "10px",
+            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)",
+          }}
+        >
+          <p
+            style={{
+              margin: 0,
+              fontSize: "14px",
+              fontWeight: "bold",
+              color: "#fff",
+              backgroundColor: "#4B970F",
+              padding: "5px 10px",
+              borderRadius: "5px 5px 0 0",
+            }}
+          >
+            Week {weeks}
+          </p>
+          <p
+            style={{
+              margin: 0,
+              fontSize: "12px",
+              color: "#333",
+              padding: "5px",
+            }}
+          >
+            Stage:{" "}
+            <span style={{ fontWeight: "bold" }}>
+              {npkData?.Crop_Growth_Stage}
+            </span>
+          </p>
+        </div>
+      );
+    }
+    return null;
+  };
+
   return (
     <div body className="plant-growth-card shadow">
       <div className="header-container">
         <div className="heading-container">
-          {" "}
-          {/* <h2 className="header-title">Plant Growth Activity</h2> */}
           <div className="subheader-text">{farmDetails?.cropName}</div>
         </div>
-        {/* <div className="dropdown-container">
-          <div className="custom-dropdown">
-            <select>
-              <option>Planning/Sowing</option>
-              <option>Sowing</option>
-              <option>Growth</option>
-            </select>
-          </div>
-          <div className="custom-dropdown">
-            <select>
-              <option>Days</option>
-              <option>Week 1</option>
-              <option>Week 2</option>
-              <option>Week 3</option>
-            </select>
-          </div>
-        </div> */}
       </div>
 
       <div className="chart-container">
@@ -65,8 +105,7 @@ const CropGrowth = ({ farmDetails, npkData }) => {
                 <stop offset="95%" stopColor="#4B970F" stopOpacity={0} />
               </linearGradient>
             </defs>
-            <CartesianGrid stroke="#ccc" vertical={false} />{" "}
-            {/* Removes vertical lines */}
+            <CartesianGrid stroke="#ccc" vertical={false} />
             <XAxis
               dataKey="week"
               axisLine={false}
@@ -75,27 +114,13 @@ const CropGrowth = ({ farmDetails, npkData }) => {
                 fontSize: "10px",
                 fill: "#000000",
                 fontWeight: 600,
-                paddingTop: "100px",
               }}
               tickMargin={5}
             />
-            {/* <YAxis
-              type="number"
-              domain={[1, 6]}
-              ticks={[1, 2, 3, 4, 5, 6]}
-              tickMargin={15}
-              unit=" cm"
-              axisLine={false}
-              tickLine={false}
-              style={{ fontSize: "12px", fill: "#000000", fontWeight: 600 }}
-            /> */}
             <Tooltip
-              contentStyle={{
-                backgroundColor: "#fff",
-                borderRadius: "5px",
-                border: "1px solid #ccc",
-              }}
-              itemStyle={{ color: "#4B970F", fontSize: "12px" }}
+              content={renderCustomTooltip}
+              active={true}
+              payload={[data[activeIndex]]}
             />
             <Area
               type="monotone"

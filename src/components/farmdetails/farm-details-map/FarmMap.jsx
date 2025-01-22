@@ -153,7 +153,10 @@ const FarmMap = ({ farmDetails }) => {
           {polygonBounds && image && (
             <ImageOverlay
               url={image}
-              bounds={polygonBounds}
+              bounds={[
+                [20.134146869464864, 77.13503170361948],
+                [20.135688059795093, 77.13686633458565],
+              ]}
               opacity={1}
               interactive={true}
             />
@@ -163,7 +166,11 @@ const FarmMap = ({ farmDetails }) => {
       ) : (
         <div>Loading Map...</div>
       )}
-      <CropDetailsTab farmDetails={farmDetails} setLoading={setLoading} />
+      <CropDetailsTab
+        farmDetails={farmDetails}
+        setLoading={setLoading}
+        selectedIndex={selectedIndex}
+      />
     </div>
   );
 };

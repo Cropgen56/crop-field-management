@@ -36,6 +36,7 @@ const AddFieldMap = ({ setIsSubmitting }) => {
   });
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const [selectedIcon, setSelectedIcon] = useState("");
 
   const yellowMarkerIcon = new L.divIcon({
     className: "yellow-marker",
@@ -122,7 +123,11 @@ const AddFieldMap = ({ setIsSubmitting }) => {
           borderRadius: "50px",
           cursor: "pointer",
         }}
-        onClick={handleCurrentLocation}
+        className={selectedIcon == "current-location" ? "selected-icon" : ""}
+        onClick={() => {
+          handleCurrentLocation();
+          setSelectedIcon("current-location");
+        }}
       >
         <CurrentLocationIcon />
       </button>
@@ -214,22 +219,42 @@ const AddFieldMap = ({ setIsSubmitting }) => {
       <div className="map-controls">
         <button
           onClick={() => {
+            setSelectedIcon("back-button");
             if (markers.length === 0) {
               alert("No markers left to remove.");
             } else {
               removeLastMarker();
             }
           }}
+          className={selectedIcon == "back-button" ? "selected-icon" : ""}
         >
           <BackButtonIcon />
         </button>
-        <button onClick={() => setIsAddingMarkers(!isAddingMarkers)}>
+        <button
+          onClick={() => {
+            setIsAddingMarkers(!isAddingMarkers);
+            setSelectedIcon("add-mark");
+          }}
+          className={selectedIcon == "add-mark" ? "selected-icon" : ""}
+        >
           <AddFieldIcon />
         </button>
-        <button onClick={toggleForm}>
+        <button
+          onClick={() => {
+            toggleForm();
+            setSelectedIcon("save");
+          }}
+          className={selectedIcon == "save" ? "selected-icon" : ""}
+        >
           <SaveIcon />
         </button>
-        <button onClick={clearMarkers}>
+        <button
+          onClick={() => {
+            clearMarkers();
+            setSelectedIcon("remove");
+          }}
+          className={selectedIcon == "remove" ? "selected-icon" : ""}
+        >
           <DeleteFieldIcon />
         </button>
       </div>

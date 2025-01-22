@@ -10,15 +10,14 @@ import {
   SunIcon,
 } from "../../../assets/Icons";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchWeather } from "../../../store/weatherSlice";
 import WeekForecast from "../week-frocast/WeekForecast";
-
-const CITY = "Pune";
-const STATE = "Maharashtra";
+import { getCityState } from "../../../utils/getUserLocation";
+import { getCurrentLocation } from "../../../utils/getUserCurrectCoordinate";
 
 const FarmDetailsWeatherCard = ({ farmDetails }) => {
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
+  const dispatch = useDispatch();
 
   const polygonCoordinates = farmDetails?.field || [];
 
@@ -53,57 +52,70 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
     }
   }, [polygonCoordinates]);
 
-  const dispatch = useDispatch();
-  const { weatherData, loading, error } = useSelector((state) => state.weather);
+  // fetch the weather data
+  const [location, setLocation] = useState(null);
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
 
   useEffect(() => {
-    dispatch(fetchWeather());
-  }, [dispatch]);
+    // Fetch user's current location and update city/state
+    getCurrentLocation({
+      setLocation: (loc) => {
+        setLocation(loc);
+        if (loc?.latitude && loc?.longitude) {
+          getCityState({
+            lat: loc.latitude,
+            lng: loc.longitude,
+            setCity,
+            setState,
+          });
+        }
+      },
+    });
+  }, []);
 
-  if (error) return <div>Error: {error}</div>;
+  const weather = JSON.parse(localStorage.getItem("weatherData"))
+    .currentConditions || {
+    temp: null,
+    humidity: null,
+    pressure: null,
+    windspeed: null,
+    precipitation: null,
+  };
 
-  if (!weatherData) {
-    return <div>No weather data available.</div>;
+  // Convert Fahrenheit to Celsius
+  function fahrenheitToCelsius(fahrenheit) {
+    return ((fahrenheit - 32) * 5) / 9;
   }
-
-  const {
-    main: { temp, humidity, pressure },
-    wind: { speed },
-    weather,
-  } = weatherData;
-
-  const condition = weather[0]?.description || "Unknown";
-  const iconCode = weather[0]?.icon;
-
   return (
     <div className="farm-details-weather-card">
       <div className="location-header">
         <div className="location">
           <LocationWhite />
-          <span>{`${CITY}, ${STATE}`}</span>
+          <span>{`${city}, ${state}`}</span>
         </div>
         <div className="last-updated">Just now</div>
       </div>
       <div className="main-info">
         <div className="temp">
-          {iconCode && (
+          {/* {iconCode && (
             <img
               src={`https://openweathermap.org/img/wn/${iconCode}@2x.png`}
               alt="weather icon"
             />
-          )}
+          )} */}
           <strong>
-            {Math.round(temp)}
+            {Math.round(fahrenheitToCelsius(weather?.temp))}
             <span>°C</span>
           </strong>
         </div>
-        <div className="condition">{condition}</div>
+        <div className="condition">{weather?.conditions}</div>
       </div>
       <div className="stats">
         <div className="stat">
           <div>
             <div className="label">Wind</div>
-            <div className="value">{speed} m/s</div>
+            <div className="value">{weather?.windspeed} m/s</div>
           </div>
           <div className="icon">
             <WindWhiteIcon />
@@ -112,7 +124,7 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
         <div className="stat">
           <div>
             <div className="label">Humidity</div>
-            <div className="value">{humidity}%</div>
+            <div className="value">{weather?.humidity}%</div>
           </div>
           <div className="icon">
             <HumidityWhiteIcon />
@@ -121,7 +133,7 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
         <div className="stat">
           <div>
             <div className="label">Pressure</div>
-            <div className="value">{pressure} hPa</div>
+            <div className="value">{weather?.pressure} hPa</div>
           </div>
           <div className="icon">
             <PrassureWhiteIcon />
@@ -130,7 +142,7 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
         <div className="stat">
           <div>
             <div className="label">Precipitation</div>
-            <div className="value">0 mm</div>
+            <div className="value">{weather?.precipitation}%</div>
           </div>
 
           <div className="icon">

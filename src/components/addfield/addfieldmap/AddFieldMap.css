@@ -82,6 +82,10 @@
   background-color: #064841;
 }
 
+.selected-icon {
+  background-color: #0a796f !important;
+}
+
 /* Search Bar */
 .search-bar {
   position: fixed;

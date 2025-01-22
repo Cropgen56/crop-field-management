@@ -81,11 +81,17 @@ const CropDetailsTab = ({ farmDetails, setLoading }) => {
             onClick={() => {
               changeIndex("ndvi");
             }}
+            className={`${selectedIndex == "ndvi" ? "selected-index" : false}`}
           >
             Crop Health Check
           </span>
           <span className="vertical-line">|</span>
-          <span onClick={() => changeIndex("soc")}>Soil Organic Carbon</span>
+          <span
+            onClick={() => changeIndex("soc")}
+            className={`${selectedIndex == "soc" ? "selected-index" : false}`}
+          >
+            Soil Organic Carbon
+          </span>
           <span className="vertical-line">|</span>
           <span>Moisture Stress Check</span>
           <span className="vertical-line">|</span>
@@ -109,7 +115,9 @@ const CropDetailsTab = ({ farmDetails, setLoading }) => {
               return (
                 <div
                   key={index}
-                  className={`date-item ${isToday ? "today" : ""}`}
+                  className={`date-item ${isToday ? "today" : ""} ${
+                    ndviData.capture_date == item.date ? "selected-date" : false
+                  }`}
                   onClick={() => {
                     setLoading(true);
                     handleDateClick(item.date);

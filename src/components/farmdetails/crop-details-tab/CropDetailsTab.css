@@ -79,7 +79,13 @@
   padding: 0px;
   margin: 0px;
 }
-
+.selected-index {
+  background-color: #0a796f;
+  border-radius: 50px;
+}
+.selected-date {
+  background-color: red;
+}
 /* Responsive Design */
 @media (max-width: 768px) {
   .responsive-table {

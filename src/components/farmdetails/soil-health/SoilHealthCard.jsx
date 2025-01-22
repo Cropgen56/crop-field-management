@@ -115,16 +115,6 @@ const SoilHealthCard = ({ npkData }) => {
             />
           </BarChart>
         </ResponsiveContainer>
-        <div className="nutrient-names">
-          {formattedData.map((item, index) => (
-            <div
-              key={index}
-              className={`nutrient-name nutrient-${item.nutrient}`}
-            >
-              {item.label}
-            </div>
-          ))}
-        </div>
       </div>
     </div>
   );

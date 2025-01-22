@@ -1,15 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-const UNITS = "metric";
-
 // Async thunk for fetching current weather data
-export const fetchWeather = createAsyncThunk(
-  "weather/fetchWeather",
-  async ({ city, state }, { rejectWithValue }) => {
+export const fetchweatherData = createAsyncThunk(
+  "weather/fetchweatherData",
+  async ({ latitude, longitude }, { rejectWithValue }) => {
     try {
       const response = await axios.get(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city},${state},IN&units=${UNITS}&appid=${process.env.REACT_APP_WEATHER_API_KEY}`
+        `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${latitude},${longitude}?key=NAJUNXK89Y3ZLPJL3NYH6BS4E`
       );
       return response.data;
     } catch (error) {
@@ -26,6 +24,7 @@ const weatherSlice = createSlice({
   initialState: {
     weatherData: null,
     forecastData: null,
+    currentWeather: null,
     loading: false,
     error: null,
   },
@@ -33,15 +32,15 @@ const weatherSlice = createSlice({
   extraReducers: (builder) => {
     // Fetch current weather
     builder
-      .addCase(fetchWeather.pending, (state) => {
+      .addCase(fetchweatherData.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchWeather.fulfilled, (state, action) => {
-        state.weatherData = action.payload;
+      .addCase(fetchweatherData.fulfilled, (state, action) => {
+        state.currentWeather = action.payload.currentConditions;
         state.loading = false;
       })
-      .addCase(fetchWeather.rejected, (state, action) => {
+      .addCase(fetchweatherData.rejected, (state, action) => {
         state.error = action.payload;
         state.loading = false;
       });
