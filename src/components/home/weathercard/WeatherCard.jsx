@@ -23,7 +23,7 @@ const WeatherCard = () => {
   const dispatch = useDispatch();
 
   const weather = JSON.parse(localStorage.getItem("weatherData"))
-    .currentConditions || {
+    ?.currentConditions || {
     temp: null,
     humidity: null,
     pressure: null,
@@ -118,7 +118,7 @@ const WeatherCard = () => {
           </div>
           <div className="detail">
             <PrecipitationIcon />
-            <p>{weather?.precipitation || "0"} mm</p>
+            <p>{weather?.precipprob || "0"} mm</p>
             <small>Precipitation</small>
           </div>
         </div>

@@ -40,32 +40,16 @@ const FarmMap = ({ farmDetails }) => {
     setSelectedIndex(vagitationIndex);
   }, [vagitationIndex]);
 
-  // Load image based on selectedIndex
+  const { indexData } = useSelector((state) => state.satellite);
+
   useEffect(() => {
-    if (!selectedIndex) {
-      setImage(null);
-      return;
-    }
-
-    const dataKey =
-      selectedIndex === "soc"
-        ? "socData"
-        : selectedIndex === "ndvi"
-        ? "ndviData"
-        : null;
-    if (dataKey) {
-      const rawData = localStorage.getItem(dataKey);
-      const parsedData = parseJSON(rawData);
-      const base64_image =
-        selectedIndex === "soc"
-          ? parsedData?.base64_image
-          : parsedData?.dense_ndvi_image;
-
-      setImage(base64_image ? `data:image/png;base64,${base64_image}` : null);
+    const indexImage = indexData?.result?.dense_index_image;
+    if (indexImage) {
+      setImage(`data:image/png;base64,${indexImage}`);
     } else {
       setImage(null);
     }
-  }, [selectedIndex]);
+  }, [selectedIndex, indexData]);
 
   // Calculate polygon centroid
   const calculatePolygonCentroid = (coordinates) => {
@@ -153,10 +137,7 @@ const FarmMap = ({ farmDetails }) => {
           {polygonBounds && image && (
             <ImageOverlay
               url={image}
-              bounds={[
-                [20.134146869464864, 77.13503170361948],
-                [20.135688059795093, 77.13686633458565],
-              ]}
+              bounds={polygonBounds}
               opacity={1}
               interactive={true}
             />

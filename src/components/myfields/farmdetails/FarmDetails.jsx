@@ -91,7 +91,7 @@ const FarmDetails = ({ farmData, onEdit }) => {
       {/* Edit Button */}
       <div className="edit-farm-button">
         <button className="edit-button" onClick={onEdit}>
-          Edit Farm
+          Visit Farm
         </button>
       </div>
     </div>

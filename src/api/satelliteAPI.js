@@ -44,6 +44,7 @@ export const genrateAdvisory = async ({
   soilMoisture,
   farmDetails,
   npkData,
+  weatherData,
 }) => {
   const {
     cropName,
@@ -62,9 +63,9 @@ export const genrateAdvisory = async ({
     bbch_stage: npkData?.Crop_Growth_Stage,
     variety,
     irrigation_type,
-    humidity: 65, // Example static values; replace if dynamic
-    temp: 22,
-    rain: 10,
+    humidity: Math.round(weatherData?.humidity),
+    temp: Math.round(weatherData?.temp),
+    rain: weatherData?.precipprob,
     soil_temp: Math.round(
       soilMoisture?.data?.Soil_Temperature?.Soil_Temperature_max || 0
     ),
@@ -104,68 +105,5 @@ export const fetchSoilMoisture = async ({ farmDetails }) => {
     return response.data;
   } catch (error) {
     handleApiError(error, "Failed to fetch soil moisture data.");
-  }
-};
-
-export const socAPI = async ({ farmDetails }) => {
-  const { sowingDate, field } = farmDetails || {};
-
-  // Get the current date as the end date
-  const endDate = new Date().toISOString().split("T")[0];
-
-  // Calculate the date six months before the current date
-  const startDateObj = new Date();
-  startDateObj.setMonth(startDateObj.getMonth() - 6);
-  const startDate = startDateObj.toISOString().split("T")[0];
-
-  const coordinates = [field.map(({ lat, lng }) => [lat, lng])];
-
-  const payload = {
-    start_date: startDate,
-    end_date: endDate,
-    geometry: coordinates,
-  };
-
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_SATELLITE_API}/soc`,
-      payload
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("API Error:", error);
-    localStorage.setItem("socData", error?.response?.data?.detail);
-  }
-};
-
-export const ndviAPI = async ({ farmDetails, selectedDate }) => {
-  const { field } = farmDetails || {};
-  // Get the current date as the end date
-  const endDate = new Date().toISOString().split("T")[0];
-
-  // Calculate the date six months before the current date
-  const startDateObj = new Date();
-  startDateObj.setMonth(startDateObj.getMonth() - 6);
-  const startDate = startDateObj.toISOString().split("T")[0];
-
-  const coordinates = [field.map(({ lat, lng }) => [lng, lat])];
-
-  const payload = {
-    start_date: startDate,
-    end_date: selectedDate ? selectedDate : endDate,
-    geometry: coordinates,
-  };
-
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_SATELLITE_API}/ndvi`,
-      payload
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error("API Error:", error);
-    localStorage.setItem("socData", error?.response?.data?.detail);
   }
 };

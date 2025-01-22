@@ -7,6 +7,10 @@ import { useEffect } from "react";
 const CropAdvisoryCard = ({ soilMoisture, farmDetails, npkData }) => {
   const [advisory, setAdvisory] = useState(null);
 
+  const weatherData = JSON.parse(
+    localStorage.getItem("weatherData")
+  )?.currentConditions;
+
   function cleanSentence(sentence) {
     // Define a regular expression to match unwanted symbols
     const unwantedSymbolsRegex = /[^\w\s,.!?']/g;
@@ -40,6 +44,7 @@ const CropAdvisoryCard = ({ soilMoisture, farmDetails, npkData }) => {
           soilMoisture,
           farmDetails,
           npkData,
+          weatherData,
         });
 
         setAdvisory(advisoryData?.Advisory || {});

@@ -1,135 +1,133 @@
 import React, { useEffect, useState } from "react";
-import { ndviAPI, socAPI } from "../../../api/satelliteAPI";
-import "./CropDetailsTab.css";
 import { useDispatch, useSelector } from "react-redux";
-import { setSelectedIndex } from "../../../store/satelliteSlice";
+import {
+  fetchDatesData,
+  fetchIndexData,
+  setSelectedIndex,
+} from "../../../store/satelliteSlice";
+import "./CropDetailsTab.css";
 
 const CropDetailsTab = ({ farmDetails, setLoading }) => {
   const dispatch = useDispatch();
-  const selectedIndex = useSelector((state) => state.satellite.selectedIndex);
+  const { field } = farmDetails;
+  const coordinates = [field.map(({ lat, lng }) => [lng, lat])];
 
-  const [socData, setSocData] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("socData")) || null;
-    } catch {
-      return null;
-    }
-  });
+  const {
+    selectedIndex,
+    datesData,
+    loading: isLoading,
+    error,
+  } = useSelector((state) => state?.satellite);
 
-  const [ndviData, setNdviData] = useState(() => {
-    try {
-      return JSON.parse(localStorage.getItem("ndviData")) || null;
-    } catch {
-      return null;
-    }
-  });
-
+  // Fetch dates data on component mount or when farmDetails change
   useEffect(() => {
     if (!farmDetails) return;
+    dispatch(fetchDatesData(coordinates));
+  }, [farmDetails, dispatch]);
 
-    const fetchData = async () => {
-      try {
-        const [socResponse, ndviResponse] = await Promise.all([
-          socAPI({ farmDetails }),
-          ndviAPI({ farmDetails, selectedDate: null }),
-        ]);
+  // fetch index for the farm
+  const handleIndexDataFetch = async (date) => {
+    setLoading(true);
+    const sowingDate = farmDetails?.sowingDate;
 
-        if (socResponse) {
-          setSocData(socResponse);
-          localStorage.setItem("socData", JSON.stringify(socResponse));
-        }
-
-        if (ndviResponse) {
-          setNdviData(ndviResponse);
-          localStorage.setItem("ndviData", JSON.stringify(ndviResponse));
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const formatDate = (date) => {
-    const options = { day: "2-digit", month: "short", year: "numeric" };
-    return new Intl.DateTimeFormat("en-US", options).format(date);
-  };
-
-  const changeIndex = (index) => dispatch(setSelectedIndex(index));
-
-  const handleDateClick = async (date) => {
     try {
-      const response = await ndviAPI({ farmDetails, selectedDate: date });
-      if (response) {
-        setNdviData(response);
-        localStorage.setItem("ndviData", JSON.stringify(response));
-        setLoading(false);
-      }
+      await dispatch(
+        fetchIndexData({
+          startDate: sowingDate,
+          endDate: date,
+          geometry: coordinates,
+          index: selectedIndex,
+        })
+      ).unwrap();
     } catch (error) {
-      console.error("Error fetching NDVI data for date:", error);
+      console.error("Error fetching index data:", error);
+    } finally {
+      setLoading(false);
     }
   };
+  useEffect(() => {
+    handleIndexDataFetch("2025-01-10");
+  }, []);
 
-  const todayFormatted = formatDate(new Date());
+  // format dates
+  const formatDate = (date) => {
+    if (!date || isNaN(new Date(date))) {
+      console.error("Invalid date value:", date);
+      return "Invalid Date";
+    }
+    const options = { day: "2-digit", month: "short", year: "numeric" };
+    return new Intl.DateTimeFormat("en-US", options).format(new Date(date));
+  };
 
   return (
     <div className="responsive-table">
       <div className="table-header-wrapper">
         <div className="table-header">
           <span
-            onClick={() => {
-              changeIndex("ndvi");
-            }}
-            className={`${selectedIndex == "ndvi" ? "selected-index" : false}`}
+            onClick={() => dispatch(setSelectedIndex("NDVI"))}
+            className={`${selectedIndex === "NDVI" ? "selected-index" : ""}`}
           >
             Crop Health Check
           </span>
           <span className="vertical-line">|</span>
           <span
-            onClick={() => changeIndex("soc")}
-            className={`${selectedIndex == "soc" ? "selected-index" : false}`}
+            onClick={() => dispatch(setSelectedIndex("SOC_VIS"))}
+            className={`${selectedIndex === "SOC_VIS" ? "selected-index" : ""}`}
           >
-            Soil Organic Carbon
+            Soil Fertility Indicator
           </span>
           <span className="vertical-line">|</span>
-          <span>Moisture Stress Check</span>
+
+          <span
+            onClick={() => dispatch(setSelectedIndex("SAVI"))}
+            className={`${selectedIndex === "SAVI" ? "selected-index" : ""}`}
+          >
+            Plant-Soil Balance
+          </span>
           <span className="vertical-line">|</span>
-          <span>Water Stress Check</span>
+
+          <span
+            onClick={() => dispatch(setSelectedIndex("NDWI"))}
+            className={`${selectedIndex === "NDWI" ? "selected-index" : ""}`}
+          >
+            Water Availability Index
+          </span>
           <span className="vertical-line">|</span>
-          <span>Nitrogen Check</span>
+          <span
+            onClick={() => dispatch(setSelectedIndex("NDMI"))}
+            className={`${selectedIndex === "NDMI" ? "selected-index" : ""}`}
+          >
+            Crop Moisture Level
+          </span>
           <span className="vertical-line">|</span>
-          <span>Live Image</span>
+          <span
+            onClick={() => dispatch(setSelectedIndex("EVI"))}
+            className={`${selectedIndex === "EVI" ? "selected-index" : ""}`}
+          >
+            Enhanced Growth Index
+          </span>
         </div>
       </div>
 
-      {selectedIndex === "ndvi" && ndviData ? (
+      {/* Display Dates Data */}
+      {datesData ? (
         <div className="table-content visible">
-          {ndviData.all_dates_with_cloud_percentage
-            ?.slice()
-            .reverse()
-            .map((item, index) => {
-              const formattedDate = formatDate(new Date(item.date));
-              const isToday = formattedDate === todayFormatted;
-
-              return (
-                <div
-                  key={index}
-                  className={`date-item ${isToday ? "today" : ""} ${
-                    ndviData.capture_date == item.date ? "selected-date" : false
-                  }`}
-                  onClick={() => {
-                    setLoading(true);
-                    handleDateClick(item.date);
-                  }}
-                >
-                  <div>{formattedDate}</div>
-                  <div>Cloud Percentage: {item.cloud_percentage}%</div>
-                </div>
-              );
-            })}
+          {datesData.map((data, index) => (
+            <div
+              key={index}
+              className="date-item"
+              onClick={() => handleIndexDataFetch(data.date)}
+            >
+              <div>{formatDate(data.date)}</div>
+              <div>{data.cloud_percentage.toFixed(1)} cloud</div>
+            </div>
+          ))}
         </div>
-      ) : null}
+      ) : isLoading ? (
+        <div>Loading dates...</div>
+      ) : (
+        <div>No dates available</div>
+      )}
     </div>
   );
 };

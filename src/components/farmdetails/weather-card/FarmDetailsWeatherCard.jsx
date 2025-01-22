@@ -141,10 +141,9 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
         </div>
         <div className="stat">
           <div>
-            <div className="label">Precipitation</div>
-            <div className="value">{weather?.precipitation}%</div>
+            <div className="label ">Precipitation</div>
+            <div className="value">{weather?.precipprob}%</div>
           </div>
-
           <div className="icon">
             <PrecipitaionWhiteIcon />
           </div>
