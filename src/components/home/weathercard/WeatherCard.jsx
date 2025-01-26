@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getCurrentLocation } from "../../../utils/getUserCurrectCoordinate";
 import { getCityState } from "../../../utils/getUserLocation";
 import { fetchweatherData } from "../../../store/weatherSlice";
+import { useTranslation } from "react-i18next";
 
 const WeatherCard = () => {
   const [location, setLocation] = useState(null);
@@ -20,6 +21,7 @@ const WeatherCard = () => {
   const [state, setState] = useState("");
   const [lastFetchTime, setLastFetchTime] = useState(null);
 
+  const { t } = useTranslation(); // Translation hook
   const dispatch = useDispatch();
 
   const weather = JSON.parse(localStorage.getItem("weatherData"))
@@ -44,7 +46,6 @@ const WeatherCard = () => {
   };
 
   useEffect(() => {
-    // Fetch user's current location and update city/state
     getCurrentLocation({
       setLocation: (loc) => {
         setLocation(loc);
@@ -64,7 +65,6 @@ const WeatherCard = () => {
     const storedFetchTime = localStorage.getItem("lastFetchTime");
     const currentTime = Date.now();
 
-    // Check if 3 hours have passed since the last fetch
     if (
       !storedFetchTime ||
       currentTime - parseInt(storedFetchTime, 10) > 3 * 60 * 60 * 1000
@@ -75,7 +75,6 @@ const WeatherCard = () => {
     }
   }, [location, dispatch]);
 
-  // Convert Fahrenheit to Celsius
   function fahrenheitToCelsius(fahrenheit) {
     return ((fahrenheit - 32) * 5) / 9;
   }
@@ -86,10 +85,9 @@ const WeatherCard = () => {
         <div className="location-container">
           <div className="location">
             <h5>
-              <LocationIcon /> {city || "Unknown City"},{" "}
-              {state || "Unknown State"}
+              <LocationIcon /> {city || t("city")}, {state || t("state")}
             </h5>
-            <p>Weather's Today</p>
+            <p>{t("weatherToday")}</p>
           </div>
           <div className="temperature">
             <SunIcon />
@@ -104,32 +102,32 @@ const WeatherCard = () => {
           <div className="detail">
             <WindIcon />
             <p>{weather?.windspeed || "N/A"} m/s</p>
-            <small>Wind</small>
+            <small>{t("wind")}</small>
           </div>
           <div className="detail">
             <HumidityIcon />
             <p>{weather?.humidity || "N/A"}%</p>
-            <small>Humidity</small>
+            <small>{t("humidity")}</small>
           </div>
           <div className="detail">
             <PressureIcon />
             <p>{weather?.pressure || "N/A"} hPa</p>
-            <small>Pressure</small>
+            <small>{t("pressure")}</small>
           </div>
           <div className="detail">
             <PrecipitationIcon />
             <p>{weather?.precipprob || "0"} mm</p>
-            <small>Precipitation</small>
+            <small>{t("precipitation")}</small>
           </div>
         </div>
         <div className="sun-timing">
           <div>
             <p>5:30 AM</p>
-            <small>Sun Rise</small>
+            <small>{t("sunRise")}</small>
           </div>
           <div>
             <p>6:30 PM</p>
-            <small>Sun Set</small>
+            <small>{t("sunSet")}</small>
           </div>
         </div>
       </div>

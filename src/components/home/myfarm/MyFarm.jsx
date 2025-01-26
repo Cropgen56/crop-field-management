@@ -1,19 +1,21 @@
-import React, { useEffect } from "react";
+import React from "react";
 import "./MyFarm.css";
 import { PlusIcon } from "../../../assets/Icons";
 import FarmFieldCard from "../cropcard/FarmFieldCard.jsx";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const MyFarm = ({ fields }) => {
   const navigate = useNavigate();
+  const { t } = useTranslation(); // Translation hook
 
   return (
     <div className="my-farm">
-      <p className="heading">My Farm</p>
+      <p className="heading">{t("myFarm")}</p>
       <div className="crop-list-container">
         {/* Add Field Button */}
         <div className="crop-add-card-button">
-          <div className="add-field-placeholder">Add Field</div>
+          <div className="add-field-placeholder">{t("addField")}</div>
           <div
             className="crop-add-card-content"
             onClick={() => {
@@ -21,8 +23,8 @@ const MyFarm = ({ fields }) => {
             }}
           >
             <div>
-              <p>Crop Name</p>
-              <small>**ha</small>
+              <p>{t("cropName")}</p>
+              <small>{t("fieldSize")}</small>
             </div>
             <div className="add-field-button">
               <PlusIcon />
@@ -31,18 +33,19 @@ const MyFarm = ({ fields }) => {
         </div>
         {/* Crop Cards */}
         <div className="crop-list">
-          {!fields.isEmpty
-            ? fields?.map((field, index) => (
-                <FarmFieldCard
-                  key={index}
-                  cropName={field?.cropName}
-                  fieldSize={field?.fieldSize}
-                  farmDetails={field}
-                  acre={field?.acre}
-                />
-              ))
-            : // <div>No farms available</div>
-              false}
+          {fields && fields.length > 0 ? (
+            fields?.map((field, index) => (
+              <FarmFieldCard
+                key={index}
+                cropName={field?.cropName}
+                fieldSize={field?.fieldSize}
+                farmDetails={field}
+                acre={field?.acre}
+              />
+            ))
+          ) : (
+            <div>{t("noFarmsAvailable")}</div>
+          )}
         </div>
       </div>
     </div>

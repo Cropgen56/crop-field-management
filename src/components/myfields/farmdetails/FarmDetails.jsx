@@ -1,30 +1,51 @@
 import React from "react";
 import "./FarmDetails.css";
 import FarmImage from "../../../assets/Images/farm-image.jpg";
-import { MyFarmColorIcon, ShareButtonIcon } from "../../../assets/Icons";
+import {
+  EditButton,
+  MyFarmColorIcon,
+  ShareButtonIcon,
+} from "../../../assets/Icons";
 import { useNavigate } from "react-router-dom";
 import * as turf from "@turf/turf";
+import { useState } from "react";
+import { getCurrentLocation } from "../../../utils/getUserCurrectCoordinate";
+import { getCityState } from "../../../utils/getUserLocation";
+import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const FarmDetails = ({ farmData, onEdit }) => {
   const navigate = useNavigate();
+  const [location, setLocation] = useState(null);
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const { t } = useTranslation();
+
+  useEffect(() => {
+    // Fetch user's current location and update city/state
+    getCurrentLocation({
+      setLocation: (loc) => {
+        setLocation(loc);
+        if (loc?.latitude && loc?.longitude) {
+          getCityState({
+            lat: loc.latitude,
+            lng: loc.longitude,
+            setCity,
+            setState,
+          });
+        }
+      },
+    });
+  }, []);
 
   const corrdinatesPoint = farmData?.field;
   let totalArea;
   // calculate area on the basis of coordinate
   const calculateArea = (corrdinatesPoint) => {
-    // Transform backend data into Turf.js-compatible format
     const coordinates = farmData?.field?.map((point) => [point.lng, point.lat]);
-
-    // Close the polygon by adding the first point at the end
     coordinates.push(coordinates[0]);
-
-    // Create the polygon
     const polygon = turf.polygon([coordinates]);
-
-    // Calculate area in square meters
     const area = turf.area(polygon);
-
-    // Convert to hectares and acres
     const areaHectares = area / 10000;
     totalArea = area / 4046.86;
   };
@@ -34,12 +55,7 @@ const FarmDetails = ({ farmData, onEdit }) => {
   }
 
   return (
-    <div
-      className="farm-details-container"
-      onClick={() => {
-        navigate("/farm-details", { state: farmData });
-      }}
-    >
+    <div className="farm-details-container">
       {/* Farm Header */}
       <div className="farm-header">
         <div className="heading">
@@ -47,12 +63,20 @@ const FarmDetails = ({ farmData, onEdit }) => {
             <MyFarmColorIcon />
           </div>
           <div>
-            <h3>My Farm</h3>
-            <p>{farmData?.location || "Nagpur, Maharashtra"}</p>
+            <h3>{t("myFarm")}</h3>
+            <p>
+              {city || "City"}, {state || "State"}
+            </p>
           </div>
         </div>
-        <div>
-          <ShareButtonIcon />
+        <div
+          className="edit-farm"
+          onClick={() => {
+            navigate("/add-field", { state: farmData });
+          }}
+        >
+          <span>{t("edit_farm")}</span>
+          <EditButton />
         </div>
       </div>
 
@@ -68,19 +92,19 @@ const FarmDetails = ({ farmData, onEdit }) => {
           <table className="farm-details-table">
             <tbody>
               <tr>
-                <th>Farm Name:</th>
+                <th>{t("farm_name")} :</th>
                 <td>{farmData?.fieldName || "N/A"}</td>
               </tr>
               <tr>
-                <th>Crop:</th>
+                <th>{t("crop")} :</th>
                 <td>{farmData?.cropName || "N/A"}</td>
               </tr>
               <tr>
-                <th>Sowing Date:</th>
+                <th>{t("sowing_date")} :</th>
                 <td>{farmData?.sowingDate || "N/A"}</td>
               </tr>
               <tr>
-                <th>Area:</th>
+                <th>{t("acre")} :</th>
                 <td>{totalArea?.toFixed(2) + " Acre" || "N/A"} Acre</td>
               </tr>
             </tbody>
@@ -90,8 +114,13 @@ const FarmDetails = ({ farmData, onEdit }) => {
 
       {/* Edit Button */}
       <div className="edit-farm-button">
-        <button className="edit-button" onClick={onEdit}>
-          Visit Farm
+        <button
+          className="edit-button"
+          onClick={() => {
+            navigate("/farm-details", { state: farmData });
+          }}
+        >
+          {t("visit_farm")}
         </button>
       </div>
     </div>

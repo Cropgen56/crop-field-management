@@ -22,21 +22,59 @@ import {
   SaveIcon,
 } from "../../../assets/Icons";
 import AddFieldDetails from "../addfielddetails/AddFieldDetails";
+import UpdateFarmDetails from "../addfielddetails/updateFarmDetails/UpdateFarmDetails";
 import { GeoSearchControl, OpenStreetMapProvider } from "leaflet-geosearch";
+import { getCityState } from "../../../utils/getUserLocation";
+import Loading from "../../common/Loading/Loading";
+import { useLocation } from "react-router-dom";
+
 import "leaflet-geosearch/dist/geosearch.css";
 import "./AddFieldMap.css";
+import { getCurrentLocation } from "../../../utils/getUserCurrectCoordinate";
 
 const AddFieldMap = ({ setIsSubmitting }) => {
+  const data = useLocation();
+  const farmDetails = data.state;
+
   const [markers, setMarkers] = useState([]);
   const [isAddingMarkers, setIsAddingMarkers] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState({
-    lat: 20.1360471,
-    lng: 77.1360471,
-    name: "Default Location",
-  });
+  const [location, setLocation] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState({});
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
   const [selectedIcon, setSelectedIcon] = useState("");
+
+  // Fetch the weather data
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+
+  useEffect(() => {
+    if (farmDetails) {
+      setIsOpen(true);
+    }
+  }, []);
+  useEffect(() => {
+    getCurrentLocation({
+      setLocation: (loc) => {
+        setLocation(loc);
+        if (loc?.latitude && loc?.longitude) {
+          // Update selectedLocation when location is fetched
+          setSelectedLocation({
+            lat: loc.latitude,
+            lng: loc.longitude,
+            name: "Your Current Location",
+          });
+
+          getCityState({
+            lat: loc.latitude,
+            lng: loc.longitude,
+            setCity,
+            setState,
+          });
+        }
+      },
+    });
+  }, []);
 
   const yellowMarkerIcon = new L.divIcon({
     className: "yellow-marker",
@@ -170,101 +208,116 @@ const AddFieldMap = ({ setIsSubmitting }) => {
 
   return (
     <div className="map-layout add-field">
-      <div className="map-header">
-        <div className="back-btn" onClick={() => navigate(-1)}>
-          <LeftArrowIcon />
-        </div>
-      </div>
+      {selectedLocation?.lat && selectedLocation?.lng ? (
+        <>
+          <div className="map-header">
+            <div className="back-btn" onClick={() => navigate(-1)}>
+              <LeftArrowIcon />
+            </div>
+          </div>
 
-      <MapContainer
-        center={[selectedLocation.lat, selectedLocation.lng]}
-        zoom={17}
-        zoomControl={false}
-        className="map-container"
-      >
-        <TileLayer
-          attribution="© Google Maps"
-          url="http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
-          subdomains={["mt0", "mt1", "mt2", "mt3"]}
-          maxZoom={50}
-        />
-
-        {markers.map((marker, idx) => (
-          <Marker
-            key={idx}
-            position={[marker.lat, marker.lng]}
-            icon={yellowMarkerIcon}
+          <MapContainer
+            center={[selectedLocation.lat, selectedLocation.lng]}
+            zoom={17}
+            zoomControl={false}
+            className="map-container"
           >
-            <Popup>
-              Marker at [{marker.lat.toFixed(4)}, {marker.lng.toFixed(4)}]
-            </Popup>
-          </Marker>
-        ))}
+            <TileLayer
+              attribution="© Google Maps"
+              url="http://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
+              subdomains={["mt0", "mt1", "mt2", "mt3"]}
+              maxZoom={50}
+            />
 
-        {markers.length > 0 && (
-          <Polygon
-            positions={markers.map((marker) => [marker.lat, marker.lng])}
-            color="yellow"
-          />
-        )}
+            {markers.map((marker, idx) => (
+              <Marker
+                key={idx}
+                position={[marker.lat, marker.lng]}
+                icon={yellowMarkerIcon}
+              >
+                <Popup>
+                  Marker at [{marker.lat.toFixed(4)}, {marker.lng.toFixed(4)}]
+                </Popup>
+              </Marker>
+            ))}
 
-        <Markers />
-        <div className="search-field-container">
-          {" "}
-          <SearchField onLocationSelect={setSelectedLocation} />
-        </div>
+            {markers.length > 0 && (
+              <Polygon
+                positions={markers.map((marker) => [marker.lat, marker.lng])}
+                color="yellow"
+              />
+            )}
 
-        <CurrentLocationButton onLocationFound={setSelectedLocation} />
-      </MapContainer>
-      <div className="map-controls">
-        <button
-          onClick={() => {
-            setSelectedIcon("back-button");
-            if (markers.length === 0) {
-              alert("No markers left to remove.");
-            } else {
-              removeLastMarker();
-            }
-          }}
-          className={selectedIcon == "back-button" ? "selected-icon" : ""}
-        >
-          <BackButtonIcon />
-        </button>
-        <button
-          onClick={() => {
-            setIsAddingMarkers(!isAddingMarkers);
-            setSelectedIcon("add-mark");
-          }}
-          className={selectedIcon == "add-mark" ? "selected-icon" : ""}
-        >
-          <AddFieldIcon />
-        </button>
-        <button
-          onClick={() => {
-            toggleForm();
-            setSelectedIcon("save");
-          }}
-          className={selectedIcon == "save" ? "selected-icon" : ""}
-        >
-          <SaveIcon />
-        </button>
-        <button
-          onClick={() => {
-            clearMarkers();
-            setSelectedIcon("remove");
-          }}
-          className={selectedIcon == "remove" ? "selected-icon" : ""}
-        >
-          <DeleteFieldIcon />
-        </button>
-      </div>
+            <Markers />
+            <div className="search-field-container">
+              {" "}
+              <SearchField onLocationSelect={setSelectedLocation} />
+            </div>
 
-      <AddFieldDetails
-        isOpen={isOpen}
-        toggleForm={toggleForm}
-        fieldCoordinate={markers}
-        setIsSubmitting={setIsSubmitting}
-      />
+            <CurrentLocationButton onLocationFound={setSelectedLocation} />
+          </MapContainer>
+          <div className="map-controls">
+            <button
+              onClick={() => {
+                setSelectedIcon("back-button");
+                if (markers.length === 0) {
+                  alert("No markers left to remove.");
+                } else {
+                  removeLastMarker();
+                }
+              }}
+              className={selectedIcon == "back-button" ? "selected-icon" : ""}
+            >
+              <BackButtonIcon />
+            </button>
+            <button
+              onClick={() => {
+                setIsAddingMarkers(!isAddingMarkers);
+                setSelectedIcon("add-mark");
+              }}
+              className={selectedIcon == "add-mark" ? "selected-icon" : ""}
+            >
+              <AddFieldIcon />
+            </button>
+            <button
+              onClick={() => {
+                toggleForm();
+                setSelectedIcon("save");
+              }}
+              className={selectedIcon == "save" ? "selected-icon" : ""}
+            >
+              <SaveIcon />
+            </button>
+            <button
+              onClick={() => {
+                clearMarkers();
+                setSelectedIcon("remove");
+              }}
+              className={selectedIcon == "remove" ? "selected-icon" : ""}
+            >
+              <DeleteFieldIcon />
+            </button>
+          </div>
+          {farmDetails ? (
+            <UpdateFarmDetails
+              isOpen={isOpen}
+              toggleForm={toggleForm}
+              fieldCoordinate={markers}
+              setIsSubmitting={setIsSubmitting}
+              farmDetails={farmDetails}
+            />
+          ) : (
+            <AddFieldDetails
+              isOpen={isOpen}
+              toggleForm={toggleForm}
+              fieldCoordinate={markers}
+              setIsSubmitting={setIsSubmitting}
+            />
+          )}
+        </>
+      ) : (
+        false
+      )}
     </div>
   );
 };

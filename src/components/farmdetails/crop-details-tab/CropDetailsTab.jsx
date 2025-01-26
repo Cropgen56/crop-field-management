@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchDatesData,
@@ -6,11 +6,13 @@ import {
   setSelectedIndex,
 } from "../../../store/satelliteSlice";
 import "./CropDetailsTab.css";
+import { useTranslation } from "react-i18next";
 
 const CropDetailsTab = ({ farmDetails, setLoading }) => {
   const dispatch = useDispatch();
   const { field } = farmDetails;
   const coordinates = [field.map(({ lat, lng }) => [lng, lat])];
+  const { t } = useTranslation();
 
   const {
     selectedIndex,
@@ -25,7 +27,7 @@ const CropDetailsTab = ({ farmDetails, setLoading }) => {
     dispatch(fetchDatesData(coordinates));
   }, [farmDetails, dispatch]);
 
-  // fetch index for the farm
+  // Fetch index for the farm
   const handleIndexDataFetch = async (date) => {
     setLoading(true);
     const sowingDate = farmDetails?.sowingDate;
@@ -45,11 +47,12 @@ const CropDetailsTab = ({ farmDetails, setLoading }) => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     handleIndexDataFetch("2025-01-10");
   }, []);
 
-  // format dates
+  // Format dates
   const formatDate = (date) => {
     if (!date || isNaN(new Date(date))) {
       console.error("Invalid date value:", date);
@@ -67,14 +70,15 @@ const CropDetailsTab = ({ farmDetails, setLoading }) => {
             onClick={() => dispatch(setSelectedIndex("NDVI"))}
             className={`${selectedIndex === "NDVI" ? "selected-index" : ""}`}
           >
-            Crop Health Check
+            {t("cropHealthCheck")}{" "}
+            {/* Translation key for 'Crop Health Check' */}
           </span>
           <span className="vertical-line">|</span>
           <span
             onClick={() => dispatch(setSelectedIndex("SOC_VIS"))}
             className={`${selectedIndex === "SOC_VIS" ? "selected-index" : ""}`}
           >
-            Soil Fertility Indicator
+            {t("soilFertilityIndicator")} {/* Translation key */}
           </span>
           <span className="vertical-line">|</span>
 
@@ -82,7 +86,7 @@ const CropDetailsTab = ({ farmDetails, setLoading }) => {
             onClick={() => dispatch(setSelectedIndex("SAVI"))}
             className={`${selectedIndex === "SAVI" ? "selected-index" : ""}`}
           >
-            Plant-Soil Balance
+            {t("plantSoilBalance")} {/* Translation key */}
           </span>
           <span className="vertical-line">|</span>
 
@@ -90,21 +94,21 @@ const CropDetailsTab = ({ farmDetails, setLoading }) => {
             onClick={() => dispatch(setSelectedIndex("NDWI"))}
             className={`${selectedIndex === "NDWI" ? "selected-index" : ""}`}
           >
-            Water Availability Index
+            {t("waterAvailabilityIndex")} {/* Translation key */}
           </span>
           <span className="vertical-line">|</span>
           <span
             onClick={() => dispatch(setSelectedIndex("NDMI"))}
             className={`${selectedIndex === "NDMI" ? "selected-index" : ""}`}
           >
-            Crop Moisture Level
+            {t("cropMoistureLevel")} {/* Translation key */}
           </span>
           <span className="vertical-line">|</span>
           <span
             onClick={() => dispatch(setSelectedIndex("EVI"))}
             className={`${selectedIndex === "EVI" ? "selected-index" : ""}`}
           >
-            Enhanced Growth Index
+            {t("enhancedGrowthIndex")} {/* Translation key */}
           </span>
         </div>
       </div>
@@ -119,14 +123,16 @@ const CropDetailsTab = ({ farmDetails, setLoading }) => {
               onClick={() => handleIndexDataFetch(data.date)}
             >
               <div>{formatDate(data.date)}</div>
-              <div>{data.cloud_percentage.toFixed(1)} cloud</div>
+              <div>
+                {data.cloud_percentage.toFixed(1)}% {t("cloud")}
+              </div>
             </div>
           ))}
         </div>
       ) : isLoading ? (
-        <div>Loading dates...</div>
+        <div>{t("loadingDates")}</div>
       ) : (
-        <div>No dates available</div>
+        <div>{t("noDataAvailable")}</div>
       )}
     </div>
   );

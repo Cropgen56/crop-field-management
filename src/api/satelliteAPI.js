@@ -6,39 +6,6 @@ const handleApiError = (error, defaultMessage) => {
   throw error.response?.data || new Error(defaultMessage);
 };
 
-// Utility function to convert coordinates
-const convertToCoordinates = (fields) => {
-  return fields.map(({ lat, lng }) => [lng, lat]);
-};
-
-// Fetch NPK Data
-export const fetcNpkData = async ({ farmDetails }) => {
-  const { field, cropName, sowingDate } = farmDetails || {};
-  if (!field || !cropName || !sowingDate) {
-    throw new Error("Invalid farm details provided for fetching NPK data.");
-  }
-
-  const coordinates = convertToCoordinates(field);
-  const payload = {
-    crop_name: cropName,
-    sowing_date: sowingDate,
-    geometry: {
-      type: "Polygon",
-      coordinates,
-    },
-  };
-
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_SATELLITE_API}/calculate-npk`,
-      payload
-    );
-    return response.data;
-  } catch (error) {
-    handleApiError(error, "Failed to fetch NPK data.");
-  }
-};
-
 // Generate Advisory Payload
 export const genrateAdvisory = async ({
   soilMoisture,
@@ -76,34 +43,11 @@ export const genrateAdvisory = async ({
 
   try {
     const response = await axios.post(
-      `${process.env.REACT_APP_SATELLITE_API}/generate-advisory`,
+      `${process.env.REACT_APP_API_URL_SATELLITE}/generate-advisory-crop`,
       payload
     );
     return response.data;
   } catch (error) {
     handleApiError(error, "Failed to generate advisory data.");
-  }
-};
-
-// Fetch Soil Moisture Data
-export const fetchSoilMoisture = async ({ farmDetails }) => {
-  const { field } = farmDetails || {};
-  if (!field) {
-    throw new Error(
-      "Invalid farm details provided for fetching soil moisture."
-    );
-  }
-
-  const coordinates = [field.map(({ lat, lng }) => [lat, lng])];
-  const payload = { coordinates };
-
-  try {
-    const response = await axios.post(
-      `${process.env.REACT_APP_SATELLITE_API}/soil-moisture`,
-      payload
-    );
-    return response.data;
-  } catch (error) {
-    handleApiError(error, "Failed to fetch soil moisture data.");
   }
 };

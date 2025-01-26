@@ -9,9 +9,12 @@ import {
 } from "../../../assets/Icons";
 import bottomImage from "../../../assets/Images/bottomnavigation.png";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const NavigationBar = () => {
+  const { t } = useTranslation(); // Translation hook
   const navigate = useNavigate();
+
   return (
     <div className="bottom-navigation-container">
       <div className="bottom-navigation">
@@ -26,23 +29,23 @@ const NavigationBar = () => {
               }}
             >
               <HomeIcon />
-            </span>{" "}
+            </span>
           </div>
-          <p>Home</p>
+          <p>{t("home")}</p>
         </div>
         <div className="nav-item">
           <div className="icon">
             <span role="img" aria-label="community">
               <Community />
-            </span>{" "}
+            </span>
           </div>
-          <p>Community</p>
+          <p>{t("community")}</p>
         </div>
         <div className="nav-item central-button">
           <div className="circle">
             <span role="img" aria-label="scan">
               <Logo />
-            </span>{" "}
+            </span>
           </div>
         </div>
         <div className="nav-item">
@@ -55,17 +58,17 @@ const NavigationBar = () => {
               }}
             >
               <MyFarmIcon />
-            </span>{" "}
+            </span>
           </div>
-          <p>My Farm</p>
+          <p>{t("myFarm")}</p>
         </div>
         <div className="nav-item">
           <div className="icon">
             <span role="img" aria-label="bot">
               <CropGenBot />
-            </span>{" "}
+            </span>
           </div>
-          <p>CropGen Bot</p>
+          <p>{t("cropGenBot")}</p>
         </div>
       </div>
     </div>

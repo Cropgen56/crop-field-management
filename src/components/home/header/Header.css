@@ -35,6 +35,15 @@ body {
   height: 12rem;
   border-radius: 50%;
 }
+/* .language-swith-button {
+  position: absolute;
+  margin-top: 1.2rem;
+  margin-left: 1rem;
+  border-radius: 25px;
+  border: none;
+  outline: none;
+  padding: 10px px;
+} */
 /* mobile view  responsive style */
 @media (max-width: 768px) {
   .header-data {

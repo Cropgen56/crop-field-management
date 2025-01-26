@@ -9,25 +9,28 @@ import {
   Legend,
 } from "recharts";
 import "./SoilHealthCard.css";
+import { useSelector } from "react-redux";
 
-const SoilHealthCard = ({ npkData }) => {
+const SoilHealthCard = () => {
+  const { NpkData } = useSelector((state) => state.satellite);
+
   const data = [
     {
       nutrient: "N",
-      current: npkData?.NPK_Available_kg?.N,
-      require: npkData?.NPK_Required_at_Stage_kg?.N,
+      current: NpkData?.NPK_Available_kg?.N,
+      require: NpkData?.NPK_Required_at_Stage_kg?.N,
       label: "Nitrogen",
     },
     {
       nutrient: "P",
-      current: npkData?.NPK_Available_kg?.P,
-      require: npkData?.NPK_Required_at_Stage_kg?.P,
+      current: NpkData?.NPK_Available_kg?.P,
+      require: NpkData?.NPK_Required_at_Stage_kg?.P,
       label: "Phosphorous",
     },
     {
       nutrient: "K",
-      current: npkData?.NPK_Available_kg?.K,
-      require: npkData?.NPK_Required_at_Stage_kg?.K,
+      current: NpkData?.NPK_Available_kg?.K,
+      require: NpkData?.NPK_Required_at_Stage_kg?.K,
       label: "Potassium",
     },
   ];
@@ -81,7 +84,7 @@ const SoilHealthCard = ({ npkData }) => {
                 fill: "#000",
                 formatter: (value) => `${value}`,
                 style: {
-                  fontSize: "12px",
+                  fontSize: "10px",
                   fontWeight: "700",
                 },
               }}

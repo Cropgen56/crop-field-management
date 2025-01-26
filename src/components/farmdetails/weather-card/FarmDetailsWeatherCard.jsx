@@ -7,14 +7,15 @@ import {
   PrecipitaionWhiteIcon,
   PrassureWhiteIcon,
   WindWhiteIcon,
-  SunIcon,
 } from "../../../assets/Icons";
 import { useDispatch, useSelector } from "react-redux";
 import WeekForecast from "../week-frocast/WeekForecast";
 import { getCityState } from "../../../utils/getUserLocation";
 import { getCurrentLocation } from "../../../utils/getUserCurrectCoordinate";
+import { useTranslation } from "react-i18next";
 
 const FarmDetailsWeatherCard = ({ farmDetails }) => {
+  const { t } = useTranslation();
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
   const dispatch = useDispatch();
@@ -52,13 +53,12 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
     }
   }, [polygonCoordinates]);
 
-  // fetch the weather data
+  // Fetch the weather data
   const [location, setLocation] = useState(null);
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
 
   useEffect(() => {
-    // Fetch user's current location and update city/state
     getCurrentLocation({
       setLocation: (loc) => {
         setLocation(loc);
@@ -87,6 +87,7 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
   function fahrenheitToCelsius(fahrenheit) {
     return ((fahrenheit - 32) * 5) / 9;
   }
+
   return (
     <div className="farm-details-weather-card">
       <div className="location-header">
@@ -94,27 +95,21 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
           <LocationWhite />
           <span>{`${city}, ${state}`}</span>
         </div>
-        <div className="last-updated">Just now</div>
+        <div className="last-updated">{t("lastUpdated")}</div>
       </div>
       <div className="main-info">
         <div className="temp">
-          {/* {iconCode && (
-            <img
-              src={`https://openweathermap.org/img/wn/${iconCode}@2x.png`}
-              alt="weather icon"
-            />
-          )} */}
           <strong>
             {Math.round(fahrenheitToCelsius(weather?.temp))}
             <span>°C</span>
           </strong>
         </div>
-        <div className="condition">{weather?.conditions}</div>
+        <div className="condition">{t(weather?.conditions)}</div>
       </div>
       <div className="stats">
         <div className="stat">
           <div>
-            <div className="label">Wind</div>
+            <div className="label">{t("wind")}</div>
             <div className="value">{weather?.windspeed} m/s</div>
           </div>
           <div className="icon">
@@ -123,7 +118,7 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
         </div>
         <div className="stat">
           <div>
-            <div className="label">Humidity</div>
+            <div className="label">{t("humidity")}</div>
             <div className="value">{weather?.humidity}%</div>
           </div>
           <div className="icon">
@@ -132,7 +127,7 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
         </div>
         <div className="stat">
           <div>
-            <div className="label">Pressure</div>
+            <div className="label">{t("pressure")}</div>
             <div className="value">{weather?.pressure} hPa</div>
           </div>
           <div className="icon">
@@ -141,7 +136,7 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
         </div>
         <div className="stat">
           <div>
-            <div className="label ">Precipitation</div>
+            <div className="label">{t("precipitation")}</div>
             <div className="value">{weather?.precipprob}%</div>
           </div>
           <div className="icon">
@@ -149,8 +144,7 @@ const FarmDetailsWeatherCard = ({ farmDetails }) => {
           </div>
         </div>
       </div>
-      <h5>This Week</h5>
-      {/* Placeholder weekly forecast */}
+      <h5>{t("thisWeek")}</h5>
       <WeekForecast lat={lat} lon={lng} />
     </div>
   );

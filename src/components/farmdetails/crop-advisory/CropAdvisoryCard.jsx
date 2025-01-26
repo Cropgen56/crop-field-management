@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Logo } from "../../../assets/Icons";
 import { genrateAdvisory } from "../../../api/satelliteAPI";
 import "./CropAdvisoryCard.css";
-import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const CropAdvisoryCard = ({ soilMoisture, farmDetails, npkData }) => {
+  const { t } = useTranslation(); // Initialize translation hook
   const [advisory, setAdvisory] = useState(null);
 
   const weatherData = JSON.parse(
@@ -36,6 +37,7 @@ const CropAdvisoryCard = ({ soilMoisture, farmDetails, npkData }) => {
 
     return beforeDot;
   }
+
   // Fetch advisory data only when NPK data is fetched
   useEffect(() => {
     const fetchAdvisory = async () => {
@@ -58,7 +60,7 @@ const CropAdvisoryCard = ({ soilMoisture, farmDetails, npkData }) => {
 
   const [currentDay, setCurrentDay] = useState(1);
 
-  // Check if the advisory objectc exists and contains data for the current day
+  // Check if the advisory object exists and contains data for the current day
   const dayData = advisory?.[`Day ${currentDay}`] || null;
 
   // Handlers for navigation buttons
@@ -77,7 +79,8 @@ const CropAdvisoryCard = ({ soilMoisture, farmDetails, npkData }) => {
         <div className="card-header">
           <div className="loading-content">
             <Logo />
-            <h5 className="loading-text">Generating Advisroy...</h5>
+            <h5 className="loading-text">{t("generating_advisory")}</h5>{" "}
+            {/* Translation key */}
           </div>
         </div>
       </div>
@@ -88,7 +91,10 @@ const CropAdvisoryCard = ({ soilMoisture, farmDetails, npkData }) => {
     <div className="card">
       <div className="card-header">
         <p>
-          <strong className="day">Day {currentDay}:</strong>
+          <strong className="day">
+            {t("day")}
+            {currentDay}:
+          </strong>
         </p>
       </div>
 
@@ -96,32 +102,37 @@ const CropAdvisoryCard = ({ soilMoisture, farmDetails, npkData }) => {
         <>
           <div className="card-section">
             <p>
-              <strong>Disease/Pest Control:</strong>{" "}
-              {dayData["Disease/Pest Control"] || "Not Available"}
+              <strong>{t("disease_pest_control")}:</strong>{" "}
+              {/* Translation key */}
+              {dayData["Disease/Pest Control"] || t("not_available")}
             </p>
           </div>
           <div className="card-section">
             <p>
-              <strong>Fertigation:</strong>{" "}
-              {dayData["Fertigation"] || "Not Available"}
+              <strong>{t("fertigation")}:</strong> {/* Translation key */}
+              {dayData["Fertigation"] || t("not_available")}
             </p>
           </div>
           <div className="card-section">
             <p>
-              <strong>Watering:</strong>{" "}
-              {dayData["Watering"] || "Not Available"}
+              <strong>{t("watering")}:</strong> {/* Translation key */}
+              {dayData["Watering"] || t("not_available")}
             </p>
           </div>
           <div className="card-section">
             <p>
-              <strong>Monitoring:</strong>{" "}
-              {cleanSentence(dayData["Monitoring"]) || "Not Available"}
+              <strong>{t("monitoring")}:</strong> {/* Translation key */}
+              {cleanSentence(dayData["Monitoring"]) || t("not_available")}
             </p>
           </div>
         </>
       ) : (
         <div className="card-section">
-          <p>No Data Available for Day {currentDay}</p>
+          <p>
+            {t("no_data_available")} {t("day")}
+            {currentDay}
+          </p>{" "}
+          {/* Translation key */}
         </div>
       )}
 
@@ -132,14 +143,14 @@ const CropAdvisoryCard = ({ soilMoisture, farmDetails, npkData }) => {
           onClick={handlePrevious}
           disabled={currentDay === 1}
         >
-          ← Previous
+          ← {t("previous")} {/* Translation key */}
         </button>
         <button
           className="next-button"
           onClick={handleNext}
           disabled={currentDay === 4}
         >
-          Next →
+          {t("next")} → {/* Translation key */}
         </button>
       </div>
     </div>

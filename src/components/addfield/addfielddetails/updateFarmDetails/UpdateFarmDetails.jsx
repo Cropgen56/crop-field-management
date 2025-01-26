@@ -1,22 +1,25 @@
 import React, { useId, useState } from "react";
-import "./AddFieldDetails.css";
-import FarmImage from "../../../assets/Images/farm-image.jpg";
-import { MyFarmColorIcon } from "../../../assets/Icons";
+import FarmImage from "../../../../assets/Images/farm-image.jpg";
+import {
+  DeleteIcon,
+  MyFarmColorIcon,
+  UpdateIcon,
+} from "../../../../assets/Icons";
 import { useDispatch } from "react-redux";
-import { addFarmField } from "../../../store/farmSlice";
+import { deleteFarmField, updateFarmField } from "../../../../store/farmSlice";
 import { useNavigate } from "react-router-dom";
-import Loading from "../../common/Loading/Loading";
 import * as turf from "@turf/turf";
+import { getCurrentLocation } from "../../../../utils/getUserCurrectCoordinate";
+import { getCityState } from "../../../../utils/getUserLocation";
 import { useEffect } from "react";
-import { getCurrentLocation } from "../../../utils/getUserCurrectCoordinate";
-import { getCityState } from "../../../utils/getUserLocation";
+import "./UpdateFarmDetails.css";
 import { useTranslation } from "react-i18next";
 
-const AddFieldDetails = ({
+const UpdateFarmDetails = ({
   isOpen,
   toggleForm,
-  fieldCoordinate,
   setIsSubmitting,
+  farmDetails,
 }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate("/my-farms");
@@ -44,15 +47,13 @@ const AddFieldDetails = ({
     });
   }, []);
 
-  const userData = JSON.parse(localStorage.getItem("userData"));
-
   // Initialize state to hold field data
   const [field, setField] = useState({
-    farmName: "",
-    cropName: "",
-    sowingDate: "",
-    variety: "",
-    irrigation: "",
+    farmName: farmDetails?.fieldName,
+    cropName: farmDetails?.cropName,
+    sowingDate: farmDetails?.sowingDate,
+    variety: farmDetails?.variety,
+    irrigation: farmDetails?.typeOfIrrigation.replace(/ /g, "-").toLowerCase(),
   });
 
   // Handle form input changes
@@ -108,16 +109,6 @@ const AddFieldDetails = ({
     return valid;
   };
 
-  // calculate the farm in acer
-  const calculateArea = (corrdinatesPoint) => {
-    const coordinates = corrdinatesPoint.map((point) => [point.lng, point.lat]);
-    coordinates.push(coordinates[0]);
-    const polygon = turf.polygon([coordinates]);
-    const area = turf.area(polygon);
-
-    return area / 4046.86;
-  };
-
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -126,15 +117,13 @@ const AddFieldDetails = ({
     if (validateForm()) {
       setIsSubmitting(true);
       dispatch(
-        addFarmField({
-          latlng: fieldCoordinate,
-          userId: userData?._id,
+        updateFarmField({
           cropName: field.cropName,
           variety: field.variety,
           sowingDate: field.sowingDate,
           typeOfIrrigation: field.irrigation,
-          farmName: field.farmName,
-          acre: calculateArea(fieldCoordinate),
+          fieldName: field.farmName,
+          farmId: farmDetails?._id,
         })
       ).then((res) => {
         if (res?.payload?.success) {
@@ -149,6 +138,12 @@ const AddFieldDetails = ({
     }
   };
 
+  const handelDelete = () => {
+    dispatch(deleteFarmField({ farmId: farmDetails?._id })).then(() => {
+      navigate("/");
+    });
+  };
+
   return (
     <>
       {/* Sliding Form */}
@@ -160,15 +155,13 @@ const AddFieldDetails = ({
               <MyFarmColorIcon />
             </div>
             <div>
-              <h3>{t("farm_name")}</h3>
+              <h3>My Farm</h3>
               <p>
                 {city}, {state}
               </p>
             </div>
           </div>
-          <button className="close-button" onClick={toggleForm}>
-            ✕
-          </button>
+          <button className="close-button">✕</button>
         </div>
 
         {/* Content Section */}
@@ -189,7 +182,6 @@ const AddFieldDetails = ({
               value={field.farmName}
               onChange={handleInputChange}
             />
-
             {/* cropName */}
             <label htmlFor="cropName">{t("cropName")}</label>
             <select
@@ -282,8 +274,7 @@ const AddFieldDetails = ({
               <option value="Carrot">{t("carrot")}</option>
               <option value="Other">{t("other")}</option>
             </select>
-
-            {/* Sowing Date */}
+            {/* Sowing Date */}{" "}
             <label htmlFor="sowingDate">{t("sowing_date")}</label>
             <input
               type="date"
@@ -292,7 +283,6 @@ const AddFieldDetails = ({
               value={field.sowingDate}
               onChange={handleInputChange}
             />
-
             {/* Variety */}
             <label htmlFor="variety">{t("variety")}</label>
             <input
@@ -302,7 +292,6 @@ const AddFieldDetails = ({
               value={field.variety}
               onChange={handleInputChange}
             />
-
             {/* Type of Irrigation */}
             <label htmlFor="irrigation">{t("type_of_irrigation")}</label>
             <select
@@ -321,12 +310,28 @@ const AddFieldDetails = ({
           </form>
         </div>
         {/* Save Button */}
-        <button type="submit" className="save-button" onClick={handleSubmit}>
-          {t("save_farm")}
-        </button>
+        <div className="save-update-button">
+          {" "}
+          <button
+            type="submit"
+            className="delete-button"
+            onClick={handelDelete}
+          >
+            <DeleteIcon />
+            {t("delete_farm")}
+          </button>
+          <button
+            type="submit"
+            className="update-button"
+            onClick={handleSubmit}
+          >
+            <UpdateIcon />
+            {t("update_farm")}
+          </button>
+        </div>
       </div>
     </>
   );
 };
 
-export default AddFieldDetails;
+export default UpdateFarmDetails;

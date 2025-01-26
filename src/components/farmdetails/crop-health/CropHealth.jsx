@@ -5,10 +5,13 @@ import cropImage from "../../../assets/Images/weat-crop-image.jpg";
 import "./CropHealth.css";
 import * as turf from "@turf/turf";
 import { ShareButtonIcon } from "../../../assets/Icons";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CropHealth = ({ farmDetails }) => {
+  const { t, i18n } = useTranslation();
   const data = {
     datasets: [
       {
@@ -34,11 +37,13 @@ const CropHealth = ({ farmDetails }) => {
     return daysDifference;
   }
 
+  const { cropYield, cropHealth } = useSelector((state) => state.satellite);
+
   return (
     <div className="crop-health-container">
       <div className="crop-health-card">
         <div className="header">
-          <h2>Crop Health</h2>
+          <h2>{t("cropHealth")}</h2> {/* Translation for 'Crop Health' */}
           <ShareButtonIcon />
         </div>
         <div className="crop-details-horizontal">
@@ -52,28 +57,35 @@ const CropHealth = ({ farmDetails }) => {
               <tbody>
                 <tr>
                   <th>
-                    <strong>Crop Name</strong>
+                    <strong>{t("cropName")}</strong>
                   </th>
                   <td>:- {farmDetails?.cropName}</td>
                 </tr>
                 <tr>
                   <th>
-                    <strong>Crop Age</strong>
+                    <strong>{t("cropAge")}</strong>
                   </th>
                   <td>
                     :-{" "}
-                    {`${calculateDaysFromDate(farmDetails?.sowingDate)} days`}
+                    {`${calculateDaysFromDate(farmDetails?.sowingDate)} ${t(
+                      "days"
+                    )}`}
                   </td>
                 </tr>
+                {cropYield ? (
+                  <tr>
+                    <th>
+                      <strong>{t("standardYield")}</strong>
+                    </th>
+                    <td>:- {cropYield?.Standard_Yield_units}</td>
+                  </tr>
+                ) : (
+                  false
+                )}
+
                 <tr>
                   <th>
-                    <strong>Standard Yield Data</strong>
-                  </th>
-                  <td>:- 460.00 kg/acre</td>
-                </tr>
-                <tr>
-                  <th>
-                    <strong>Total Area</strong>
+                    <strong>{t("totalArea")}</strong>
                   </th>
                   <td>:- {farmDetails?.acre?.toFixed(2) + " Acre"}</td>
                 </tr>
@@ -102,8 +114,15 @@ const CropHealth = ({ farmDetails }) => {
               height={50}
             />
             <div className="chart-percentage">
-              <span>60%</span>
-              <p>Normal</p>
+              {cropHealth ? (
+                <>
+                  {" "}
+                  <span>{cropHealth?.Health_Percentage}%</span>
+                  <p>{cropHealth?.Crop_Health}</p>
+                </>
+              ) : (
+                false
+              )}
             </div>
           </div>
         </div>

@@ -147,6 +147,17 @@
 .farm-details-container .edit-button:hover {
   background: #00695c;
 }
+.edit-farm {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.edit-farm span {
+  padding-right: 10px;
+  color: #075a53;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
 
 /* Responsive Design */
 @media (min-width: 768px) {

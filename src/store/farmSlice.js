@@ -18,7 +18,6 @@ export const addFarmField = createAsyncThunk(
     },
     { rejectWithValue }
   ) => {
-    console.log(acre);
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_URL}/api/field/add-field/${userId}`,
@@ -54,6 +53,51 @@ export const getFarmFields = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data || "Failed to fetch farm fields"
+      );
+    }
+  }
+);
+
+// Async thunk for adding a new farm field
+export const updateFarmField = createAsyncThunk(
+  "farm/updateFarmField",
+
+  async (
+    { variety, sowingDate, typeOfIrrigation, fieldName, cropName, farmId },
+    { rejectWithValue }
+  ) => {
+    try {
+      const response = await axios.patch(
+        `${process.env.REACT_APP_API_URL}/api/field/update-field/${farmId}`,
+        {
+          variety,
+          sowingDate,
+          typeOfIrrigation,
+          fieldName,
+          cropName,
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to update farm field"
+      );
+    }
+  }
+);
+
+// Async thunk for adding a new farm field
+export const deleteFarmField = createAsyncThunk(
+  "farm/updateFarmField",
+  async ({ farmId }, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_URL}/api/field/delete-field/${farmId}`
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || "Failed to update farm field"
       );
     }
   }
@@ -102,6 +146,22 @@ const farmSlice = createSlice({
         state.error = null;
       })
       .addCase(getFarmFields.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+      // Get Farm Fields
+      .addCase(updateFarmField.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(updateFarmField.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        console.log(action.payload);
+        // state.fields = action.payload.farmFields;
+        state.error = null;
+      })
+      .addCase(updateFarmField.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       });

@@ -1,9 +1,10 @@
-// Import necessary libraries
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next"; // Import translation hook
 import "./CropProtection.css";
 import Disease from "../../../assets/Images/disease.jpg";
 
 const CropProtection = () => {
+  const { t } = useTranslation(); // Initialize translation hook
   const [isExpanded, setIsExpanded] = useState(false);
 
   const toggleExpand = () => {
@@ -19,18 +20,13 @@ const CropProtection = () => {
 
       {/* Text Content Section */}
       <div className="content-section">
-        <h3 className="title">Pest and their control</h3>
+        <h3 className="title">{t("pestControlTitle")}</h3>
         <div className={`description-box ${isExpanded ? "expanded" : ""}`}>
-          <strong>Aphids</strong>
-          <p>
-            Aphids can be problematic pests in wheat. There are several species
-            of aphids in wheat fields. These include the English grain aphid and
-            the bird-cherry oat aphid. Different species have different life
-            cycles. Aphids do little direct damage to wheat.
-          </p>
+          <strong>{t("aphids")}</strong>
+          <p>{t("aphidsDescription")}</p>
         </div>
         <button onClick={toggleExpand} className="toggle-button">
-          {isExpanded ? "Show Less ▲" : "Show More ▼"}
+          {isExpanded ? t("showLess") : t("showMore")}
         </button>
       </div>
     </div>

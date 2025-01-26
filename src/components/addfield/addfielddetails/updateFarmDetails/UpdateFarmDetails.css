@@ -1,0 +1,148 @@
+.update-save-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5rem;
+}
+.update-save-button button {
+  width: 100%;
+  padding: 10px;
+  background: #075a53;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.update-save-button button {
+  width: 45%;
+}
+
+.update-save-button .delete-button {
+  background-color: rgb(215, 47, 47);
+}
+
+.add-field-details-container {
+  position: fixed;
+  bottom: -100%;
+  left: 0;
+  width: 90%;
+  background: white;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+  border-radius: 12px 12px 0 0;
+  transition: bottom 0.3s ease;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.add-field-details-container.open {
+  bottom: 0;
+}
+
+.form-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.form-header .heading {
+  display: flex;
+  width: 70%;
+}
+.form-header .heading .icon {
+  margin-right: 0.3rem;
+}
+.form-header .heading h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.form-header .heading p {
+  margin: 0;
+  color: gray;
+  font-size: 0.9rem;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  color: #000;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.form-content {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
+.image-container img {
+  width: 100%;
+  height: auto;
+}
+
+.form-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-details label {
+  margin-bottom: 2px;
+  font-size: 0.9rem;
+  color: #9a9898;
+}
+
+.form-details input,
+.form-details select {
+  margin-bottom: 5px;
+  padding: 5px;
+  border: 1.5px solid #075a53;
+  border-radius: 5px;
+}
+
+.save-update-button {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.5rem;
+}
+.save-update-button button {
+  width: 47%;
+  padding: 10px;
+  background: #075a53;
+  color: white;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 600;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.save-update-button .delete-button {
+  background-color: rgb(206, 7, 7);
+}
+
+.save-button:hover {
+  background: #075a53;
+}
+
+@media (min-width: 768px) {
+  .form-content {
+    flex-direction: row;
+  }
+
+  .image-container {
+    flex: 1;
+    max-width: 40%;
+  }
+
+  .form-details {
+    flex: 2;
+    margin-left: 20px;
+  }
+}

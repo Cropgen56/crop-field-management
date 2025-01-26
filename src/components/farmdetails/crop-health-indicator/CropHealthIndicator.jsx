@@ -1,7 +1,10 @@
 import React from "react";
+import { useTranslation } from "react-i18next";
 import "./CropHealthIndicator.css";
 
 const HealthIndicator = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="health-indicator-container">
       <div className="indicator-bar">
@@ -11,10 +14,10 @@ const HealthIndicator = () => {
         <div className="cloud"></div>
       </div>
       <div className="indicator-labels">
-        <span>Healthy</span>
-        <span className="moderate-label">Moderate</span>
-        <span className="low-label">Low</span>
-        <span className="cloud-label">Cloud</span>
+        <span>{t("healthy")}</span>
+        <span className="moderate-label">{t("moderate")}</span>
+        <span className="low-label">{t("low")}</span>
+        <span className="cloud-label">{t("cloud")}</span>
       </div>
     </div>
   );

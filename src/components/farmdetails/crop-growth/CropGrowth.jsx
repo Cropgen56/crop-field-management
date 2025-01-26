@@ -9,8 +9,10 @@ import {
 } from "recharts";
 
 import "./CropGrowth.css";
+import { useTranslation } from "react-i18next";
 
 const CropGrowth = ({ farmDetails, npkData }) => {
+  const { t } = useTranslation(); // Initialize translation hook
   const data = [
     { week: "Week 1", height: 1 },
     { week: "Week 2", height: 2 },
@@ -64,7 +66,7 @@ const CropGrowth = ({ farmDetails, npkData }) => {
               borderRadius: "5px 5px 0 0",
             }}
           >
-            Week {weeks}
+            {t("week")} {weeks} {/* Translation key */}
           </p>
           <p
             style={{
@@ -74,7 +76,7 @@ const CropGrowth = ({ farmDetails, npkData }) => {
               padding: "5px",
             }}
           >
-            Stage:{" "}
+            {t("stage")}:{" "}
             <span style={{ fontWeight: "bold" }}>
               {npkData?.Crop_Growth_Stage}
             </span>

@@ -1,10 +1,15 @@
 import React from "react";
 import "./SoilMoistureTemperature.css";
 import soilTemperatureImage from "../../../../assets/Images/soil-temperature.png";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
-const SoilMoistureTemperature = ({ soilMoisture }) => {
+const SoilMoistureTemperature = () => {
+  const { t } = useTranslation();
+  const { SoilMoisture } = useSelector((state) => state.satellite);
+
   // Destructure data from soilMoisture
-  const { Soil_Moisture, Soil_Temperature } = soilMoisture?.data || {};
+  const { Soil_Moisture, Soil_Temperature } = SoilMoisture?.data || {};
 
   // Format the data or provide default values if unavailable
   const soilMoistureValue =
@@ -17,10 +22,10 @@ const SoilMoistureTemperature = ({ soilMoisture }) => {
       {/* Soil Moisture Section */}
       <div className="soil-stat">
         <div className="icon-container">
-          <img src={soilTemperatureImage} alt="Soil Moisture" />
+          <img src={soilTemperatureImage} alt={t("soilMoisture")} />
         </div>
         <div className="data-container">
-          <p>Soil Moisture</p>
+          <p>{t("soilMoisture")}</p>
           <strong>{soilMoistureValue}%</strong>
         </div>
       </div>
@@ -28,10 +33,10 @@ const SoilMoistureTemperature = ({ soilMoisture }) => {
       {/* Soil Temperature Section */}
       <div className="soil-stat">
         <div className="icon-container">
-          <img src={soilTemperatureImage} alt="Soil Temperature" />
+          <img src={soilTemperatureImage} alt={t("soilTemperature")} />
         </div>
         <div className="data-container">
-          <p>Soil Temperature</p>
+          <p>{t("soilTemperature")}</p>
           <strong>{soilTemperatureValue}°C</strong>
         </div>
       </div>

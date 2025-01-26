@@ -33,11 +33,7 @@ const MyFields = () => {
         {/* Map through fields and render FarmDetails for each */}
         {fields.length > 0 ? (
           fields?.map((field, index) => (
-            <FarmDetails
-              key={index}
-              farmData={field}
-              // onEdit={() => console.log(`Edit farm ${field.farmName}`)}
-            />
+            <FarmDetails key={index} farmData={field} />
           ))
         ) : (
           <div>No farms available</div>
