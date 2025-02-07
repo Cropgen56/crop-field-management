@@ -26,26 +26,32 @@ const UpdateFarmDetails = ({
 
   const { t } = useTranslation();
   // fetch the user location data
-  const [location, setLocation] = useState(null);
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
 
+  // Calculate the centroid
+  const centroid = farmDetails?.field?.reduce(
+    (acc, point) => {
+      acc.lat += point.lat;
+      acc.lng += point.lng;
+      return acc;
+    },
+    { lat: 0, lng: 0 }
+  );
+
+  centroid.lat /= farmDetails?.field?.length;
+  centroid.lng /= farmDetails?.field?.length;
+
   useEffect(() => {
-    // Fetch user's current location and update city/state
-    getCurrentLocation({
-      setLocation: (loc) => {
-        setLocation(loc);
-        if (loc?.latitude && loc?.longitude) {
-          getCityState({
-            lat: loc.latitude,
-            lng: loc.longitude,
-            setCity,
-            setState,
-          });
-        }
-      },
-    });
-  }, []);
+    if (centroid) {
+      getCityState({
+        lat: centroid.lat,
+        lng: centroid.lng,
+        setCity,
+        setState,
+      });
+    }
+  }, [centroid]);
 
   // Initialize state to hold field data
   const [field, setField] = useState({
@@ -54,6 +60,7 @@ const UpdateFarmDetails = ({
     sowingDate: farmDetails?.sowingDate,
     variety: farmDetails?.variety,
     irrigation: farmDetails?.typeOfIrrigation.replace(/ /g, "-").toLowerCase(),
+    typeOfFarming: farmDetails?.typeOfFarming,
   });
 
   // Handle form input changes
@@ -124,6 +131,7 @@ const UpdateFarmDetails = ({
           typeOfIrrigation: field.irrigation,
           fieldName: field.farmName,
           farmId: farmDetails?._id,
+          typeOfFarming: field.typeOfFarming,
         })
       ).then((res) => {
         if (res?.payload?.success) {
@@ -300,12 +308,25 @@ const UpdateFarmDetails = ({
               value={field.irrigation}
               onChange={handleInputChange}
             >
-              <option value="" disabled>
-                {t("select_irrigation_type")}
-              </option>
-              <option value="open-irrigation">{t("type_of_irrigation")}</option>
               <option value="drip-irrigation">{t("drip_irrigation")}</option>
               <option value="sprinkler">{t("sprinkler")}</option>
+              <option value="open-irrigation">{t("open_irrigation")}</option>
+            </select>
+            {/* Type of Farming */}
+            <label htmlFor="farming">{t("type_of_farming")}</label>
+            <select
+              id="farming"
+              name="typeOfFarming"
+              value={field.typeOfFarming}
+              onChange={handleInputChange}
+            >
+              {" "}
+              <option value="" disabled>
+                {t("select_farming")}
+              </option>
+              <option value="Inorganic">{t("inorganic")}</option>
+              <option value="Integrated">{t("integrated")}</option>
+              <option value="Organic">{t("organic")}</option>
             </select>
           </form>
         </div>

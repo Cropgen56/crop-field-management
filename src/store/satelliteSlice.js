@@ -9,9 +9,13 @@ const initialState = {
   cropHealth: null,
   SoilMoisture: null,
   NpkData: null,
+  Advisory: null,
   cropYield: null,
   loading: false,
   error: null,
+  isLoading: {
+    index: false,
+  },
 };
 
 // Async thunk for fetching dates and true color data
@@ -44,7 +48,7 @@ export const fetchIndexData = createAsyncThunk(
         {
           start_date: startDate,
           end_date: endDate,
-          geometry,
+          geometry: geometry,
           index,
           dataset: "HARMONIZED",
         }
@@ -179,7 +183,10 @@ export const fetcNpkData = createAsyncThunk(
 // Async thunk for NPK API
 export const genrateAdvisory = createAsyncThunk(
   "satellite/genrateAdvisory",
-  async ({ farmDetails, soilMoisture, npkData }, { rejectWithValue }) => {
+  async (
+    { farmDetails, soilMoisture, npkData, language },
+    { rejectWithValue }
+  ) => {
     const weatherData = JSON.parse(
       localStorage.getItem("weatherData")
     ).currentConditions;
@@ -209,6 +216,8 @@ export const genrateAdvisory = createAsyncThunk(
       soil_moisture: Math.round(
         soilMoisture?.data?.Soil_Moisture?.Soil_Moisture_max || 0
       ),
+      language,
+      type_of_farming: farmDetails?.typeOfFarming,
     };
 
     try {
@@ -236,6 +245,12 @@ const satelliteSlice = createSlice({
     resetState: (state) => {
       state.datesData = null;
       state.indexData = null;
+      state.cropHealth = null;
+      state.SoilMoisture = null;
+      state.NpkData = null;
+    },
+    removeIndexData: (state) => {
+      state.indexData = null;
       state.loading = false;
       state.error = null;
     },
@@ -259,15 +274,15 @@ const satelliteSlice = createSlice({
     // Fetch vegetation index data
     builder
       .addCase(fetchIndexData.pending, (state) => {
-        state.loading = true;
+        state.isLoading.index = true;
         state.error = null;
       })
       .addCase(fetchIndexData.fulfilled, (state, action) => {
-        state.loading = false;
+        state.isLoading.index = false;
         state.indexData = action.payload;
       })
       .addCase(fetchIndexData.rejected, (state, action) => {
-        state.loading = false;
+        state.isLoading.index = false;
         state.error = action.payload;
       });
     // crop yield
@@ -326,9 +341,24 @@ const satelliteSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+    // fetch fetchSoilMoisture data
+    builder
+      .addCase(genrateAdvisory.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(genrateAdvisory.fulfilled, (state, action) => {
+        state.loading = false;
+        state.Advisory = action.payload;
+      })
+      .addCase(genrateAdvisory.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
-export const { setSelectedIndex, resetState } = satelliteSlice.actions;
+export const { setSelectedIndex, resetState, removeIndexData } =
+  satelliteSlice.actions;
 
 export default satelliteSlice.reducer;

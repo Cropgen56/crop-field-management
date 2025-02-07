@@ -53,6 +53,7 @@ const AddFieldDetails = ({
     sowingDate: "",
     variety: "",
     irrigation: "",
+    typeOfFarming: "",
   });
 
   // Handle form input changes
@@ -105,6 +106,11 @@ const AddFieldDetails = ({
       alert("Invalid irrigation type selected.");
     }
 
+    if (!field.typeOfFarming) {
+      valid = false;
+      alert("Please select a Type of Farming.");
+    }
+
     return valid;
   };
 
@@ -135,6 +141,7 @@ const AddFieldDetails = ({
           typeOfIrrigation: field.irrigation,
           farmName: field.farmName,
           acre: calculateArea(fieldCoordinate),
+          typeOfFarming: field.typeOfFarming,
         })
       ).then((res) => {
         if (res?.payload?.success) {
@@ -311,12 +318,30 @@ const AddFieldDetails = ({
               value={field.irrigation}
               onChange={handleInputChange}
             >
+              {" "}
               <option value="" disabled>
-                {t("select_irrigation_type")}
+                {t("select_irrigation")}
               </option>
-              <option value="open-irrigation">{t("type_of_irrigation")}</option>
               <option value="drip-irrigation">{t("drip_irrigation")}</option>
               <option value="sprinkler">{t("sprinkler")}</option>
+              <option value="open-irrigation">{t("open_irrigation")}</option>
+            </select>
+
+            {/* Type of Farming */}
+            <label htmlFor="farming">{t("type_of_farming")}</label>
+            <select
+              id="farming"
+              name="typeOfFarming"
+              value={field.typeOfFarming}
+              onChange={handleInputChange}
+            >
+              {" "}
+              <option value="" disabled>
+                {t("select_farming")}
+              </option>
+              <option value="Organic">{t("organic")}</option>
+              <option value="Inorganic">{t("inorganic")}</option>
+              <option value="Integrated">{t("integrated")}</option>
             </select>
           </form>
         </div>

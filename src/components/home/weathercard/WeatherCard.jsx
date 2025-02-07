@@ -14,6 +14,7 @@ import { getCurrentLocation } from "../../../utils/getUserCurrectCoordinate";
 import { getCityState } from "../../../utils/getUserLocation";
 import { fetchweatherData } from "../../../store/weatherSlice";
 import { useTranslation } from "react-i18next";
+import MovingSun from "./MovingSun";
 
 const WeatherCard = () => {
   const [location, setLocation] = useState(null);
@@ -120,7 +121,8 @@ const WeatherCard = () => {
             <small>{t("precipitation")}</small>
           </div>
         </div>
-        <div className="sun-timing">
+        <MovingSun />
+        {/* <div className="sun-timing">
           <div>
             <p>5:30 AM</p>
             <small>{t("sunRise")}</small>
@@ -129,7 +131,7 @@ const WeatherCard = () => {
             <p>6:30 PM</p>
             <small>{t("sunSet")}</small>
           </div>
-        </div>
+        </div>  */}
       </div>
     </div>
   );

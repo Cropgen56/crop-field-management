@@ -11,6 +11,8 @@ import { useTranslation } from "react-i18next";
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 const CropHealth = ({ farmDetails }) => {
+  const { NpkData } = useSelector((state) => state.satellite);
+
   const { t, i18n } = useTranslation();
   const data = {
     datasets: [
@@ -43,7 +45,7 @@ const CropHealth = ({ farmDetails }) => {
     <div className="crop-health-container">
       <div className="crop-health-card">
         <div className="header">
-          <h2>{t("cropHealth")}</h2> {/* Translation for 'Crop Health' */}
+          <h2>{t("cropHealth")}</h2>
           <ShareButtonIcon />
         </div>
         <div className="crop-details-horizontal">
@@ -59,7 +61,13 @@ const CropHealth = ({ farmDetails }) => {
                   <th>
                     <strong>{t("cropName")}</strong>
                   </th>
-                  <td>:- {farmDetails?.cropName}</td>
+                  <td>:- {farmDetails?.cropName || " "}</td>
+                </tr>
+                <tr>
+                  <th>
+                    <strong>{t("cropGrowth")}</strong>
+                  </th>
+                  <td>:- {NpkData?.Crop_Growth_Stage || " "}</td>
                 </tr>
                 <tr>
                   <th>
@@ -69,7 +77,7 @@ const CropHealth = ({ farmDetails }) => {
                     :-{" "}
                     {`${calculateDaysFromDate(farmDetails?.sowingDate)} ${t(
                       "days"
-                    )}`}
+                    )}` || " "}
                   </td>
                 </tr>
                 {cropYield ? (
@@ -77,7 +85,7 @@ const CropHealth = ({ farmDetails }) => {
                     <th>
                       <strong>{t("standardYield")}</strong>
                     </th>
-                    <td>:- {cropYield?.Standard_Yield_units}</td>
+                    <td>:- {cropYield?.Standard_Yield_units || " "}</td>
                   </tr>
                 ) : (
                   false
@@ -87,7 +95,7 @@ const CropHealth = ({ farmDetails }) => {
                   <th>
                     <strong>{t("totalArea")}</strong>
                   </th>
-                  <td>:- {farmDetails?.acre?.toFixed(2) + " Acre"}</td>
+                  <td>:- {farmDetails?.acre?.toFixed(2) + " " + t("acre")}</td>
                 </tr>
               </tbody>
             </table>

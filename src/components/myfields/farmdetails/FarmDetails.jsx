@@ -16,27 +16,33 @@ import { useTranslation } from "react-i18next";
 
 const FarmDetails = ({ farmData, onEdit }) => {
   const navigate = useNavigate();
-  const [location, setLocation] = useState(null);
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const { t } = useTranslation();
 
+  // Calculate the centroid
+  const centroid = farmData?.field?.reduce(
+    (acc, point) => {
+      acc.lat += point.lat;
+      acc.lng += point.lng;
+      return acc;
+    },
+    { lat: 0, lng: 0 }
+  );
+
+  centroid.lat /= farmData?.field?.length;
+  centroid.lng /= farmData?.field?.length;
+
   useEffect(() => {
-    // Fetch user's current location and update city/state
-    getCurrentLocation({
-      setLocation: (loc) => {
-        setLocation(loc);
-        if (loc?.latitude && loc?.longitude) {
-          getCityState({
-            lat: loc.latitude,
-            lng: loc.longitude,
-            setCity,
-            setState,
-          });
-        }
-      },
-    });
-  }, []);
+    if (centroid) {
+      getCityState({
+        lat: centroid.lat,
+        lng: centroid.lng,
+        setCity,
+        setState,
+      });
+    }
+  }, [centroid]);
 
   const corrdinatesPoint = farmData?.field;
   let totalArea;
@@ -105,7 +111,7 @@ const FarmDetails = ({ farmData, onEdit }) => {
               </tr>
               <tr>
                 <th>{t("acre")} :</th>
-                <td>{totalArea?.toFixed(2) + " Acre" || "N/A"} Acre</td>
+                <td>{totalArea?.toFixed(2) + " " + t("acre") || "N/A"} </td>
               </tr>
             </tbody>
           </table>

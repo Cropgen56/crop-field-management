@@ -15,6 +15,7 @@ export const addFarmField = createAsyncThunk(
       typeOfIrrigation,
       farmName,
       acre,
+      typeOfFarming,
     },
     { rejectWithValue }
   ) => {
@@ -30,6 +31,7 @@ export const addFarmField = createAsyncThunk(
           typeOfIrrigation,
           farmName,
           acre,
+          typeOfFarming,
         }
       );
       return response.data;
@@ -63,7 +65,15 @@ export const updateFarmField = createAsyncThunk(
   "farm/updateFarmField",
 
   async (
-    { variety, sowingDate, typeOfIrrigation, fieldName, cropName, farmId },
+    {
+      variety,
+      sowingDate,
+      typeOfIrrigation,
+      fieldName,
+      cropName,
+      farmId,
+      typeOfFarming,
+    },
     { rejectWithValue }
   ) => {
     try {
@@ -75,6 +85,7 @@ export const updateFarmField = createAsyncThunk(
           typeOfIrrigation,
           fieldName,
           cropName,
+          typeOfFarming,
         }
       );
       return response.data;
@@ -157,7 +168,6 @@ const farmSlice = createSlice({
       })
       .addCase(updateFarmField.fulfilled, (state, action) => {
         state.status = "succeeded";
-        console.log(action.payload);
         // state.fields = action.payload.farmFields;
         state.error = null;
       })

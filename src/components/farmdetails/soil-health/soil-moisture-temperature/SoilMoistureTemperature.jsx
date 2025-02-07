@@ -12,10 +12,9 @@ const SoilMoistureTemperature = () => {
   const { Soil_Moisture, Soil_Temperature } = SoilMoisture?.data || {};
 
   // Format the data or provide default values if unavailable
-  const soilMoistureValue =
-    Soil_Moisture?.Soil_Moisture_mean?.toFixed(1) || "N/A";
+  const soilMoistureValue = Soil_Moisture?.Soil_Moisture_mean?.toFixed(1);
   const soilTemperatureValue =
-    Soil_Temperature?.Soil_Temperature_mean?.toFixed(1) || "N/A";
+    Soil_Temperature?.Soil_Temperature_mean?.toFixed(1);
 
   return (
     <div className="soil-info">
@@ -26,7 +25,9 @@ const SoilMoistureTemperature = () => {
         </div>
         <div className="data-container">
           <p>{t("soilMoisture")}</p>
-          <strong>{soilMoistureValue}%</strong>
+          <strong>
+            {soilMoistureValue ? soilTemperatureValue + "%" : " "}
+          </strong>
         </div>
       </div>
 
@@ -37,7 +38,9 @@ const SoilMoistureTemperature = () => {
         </div>
         <div className="data-container">
           <p>{t("soilTemperature")}</p>
-          <strong>{soilTemperatureValue}°C</strong>
+          <strong>
+            {soilTemperatureValue ? soilTemperatureValue + "°C" : " "}
+          </strong>
         </div>
       </div>
     </div>

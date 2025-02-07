@@ -12,12 +12,14 @@ export const genrateAdvisory = async ({
   farmDetails,
   npkData,
   weatherData,
+  language,
 }) => {
   const {
     cropName,
     sowingDate,
     variety,
     typeOfIrrigation: irrigation_type,
+    typeOfFarming,
   } = farmDetails || {};
 
   if (!cropName || !sowingDate || !npkData) {
@@ -39,6 +41,8 @@ export const genrateAdvisory = async ({
     soil_moisture: Math.round(
       soilMoisture?.data?.Soil_Moisture?.Soil_Moisture_max || 0
     ),
+    language,
+    type_of_farming: typeOfFarming,
   };
 
   try {

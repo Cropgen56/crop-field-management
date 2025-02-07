@@ -66,7 +66,7 @@ const CropGrowth = ({ farmDetails, npkData }) => {
               borderRadius: "5px 5px 0 0",
             }}
           >
-            {t("week")} {weeks} {/* Translation key */}
+            {t("week")} {weeks}
           </p>
           <p
             style={{

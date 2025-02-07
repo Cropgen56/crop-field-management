@@ -10,6 +10,7 @@ import { registerUser } from "../store/authSlice";
 import { decodeToken } from "../utils/tokenUtility";
 import Loading from "../components/common/Loading/Loading";
 import { getFarmFields } from "../store/farmSlice";
+import TotalFarm from "../components/home/totalfarm/TotalFarm";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -46,9 +47,9 @@ const Home = () => {
   const { fields = [], status } = farmState || {};
 
   // Handle loading state
-  if (status === "loading") {
-    return <Loading />;
-  }
+  // if (status === "loading") {
+  //   return <Loading />;
+  // }
 
   return (
     <div className="home-page-main-container">
@@ -56,6 +57,7 @@ const Home = () => {
         <Header userDetails={registeredUser || {}} />
         <WeatherCard />
         <MyFarm fields={fields} />
+        <TotalFarm fields={fields} />
         <NavigationBar />
       </div>
     </div>

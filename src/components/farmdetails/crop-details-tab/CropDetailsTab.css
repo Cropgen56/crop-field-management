@@ -86,6 +86,22 @@
 .selected-date {
   background-color: red;
 }
+
+.loading-text {
+  text-align: center;
+}
+@keyframes fadeInOut {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .responsive-table {

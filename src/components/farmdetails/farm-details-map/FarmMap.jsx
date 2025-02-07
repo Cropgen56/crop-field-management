@@ -1,4 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from "react";
 import {
   MapContainer,
   TileLayer,
@@ -11,100 +17,89 @@ import "./FarmMap.css";
 import CropDetailsTab from "../crop-details-tab/CropDetailsTab";
 import { useSelector } from "react-redux";
 import Loading from "../../common/Loading/Loading";
+import { removeIndexData } from "../../../store/satelliteSlice";
+import { useDispatch } from "react-redux";
 
 const FarmMap = ({ farmDetails }) => {
   const [lat, setLat] = useState(null);
   const [lng, setLng] = useState(null);
-  const [polygonBounds, setPolygonBounds] = useState(null);
-  const [selectedIndex, setSelectedIndex] = useState(null);
   const [image, setImage] = useState(null);
-  const [loading, setLoading] = useState(false);
 
-  const vagitationIndex = useSelector((state) => state.satellite.selectedIndex);
+  const dispatch = useDispatch();
 
   const mapRef = useRef(null);
   const polygonCoordinates = farmDetails?.field || [];
 
-  // Utility function to safely parse JSON
-  const parseJSON = (data) => {
-    try {
-      return JSON.parse(data);
-    } catch (error) {
-      console.error("Invalid JSON data:", data, error);
-      return null;
-    }
-  };
+  useEffect(() => {
+    dispatch(removeIndexData());
+  }, []);
+  const vagitationIndex = useSelector((state) => state.satellite.selectedIndex);
+  const { indexData, isLoading } = useSelector((state) => state.satellite);
 
-  // Sync selectedIndex with vagitationIndex from Redux
+  // Sync selectedIndex with Redux state
+  const [selectedIndex, setSelectedIndex] = useState(vagitationIndex);
   useEffect(() => {
     setSelectedIndex(vagitationIndex);
   }, [vagitationIndex]);
 
-  const { indexData } = useSelector((state) => state.satellite);
-
+  // Fetch satellite image from Redux state
   useEffect(() => {
-    const indexImage = indexData?.result?.dense_index_image;
-    if (indexImage) {
-      setImage(`data:image/png;base64,${indexImage}`);
+    if (indexData?.result?.dense_index_image) {
+      setImage(`data:image/png;base64,${indexData.result.dense_index_image}`);
     } else {
       setImage(null);
     }
-  }, [selectedIndex, indexData]);
+  }, [indexData]);
 
-  // Calculate polygon centroid
-  const calculatePolygonCentroid = (coordinates) => {
-    if (coordinates.length < 3) return { centroidLat: null, centroidLng: null };
+  // Calculate centroid using useMemo to avoid recalculations
+  const polygonCentroid = useMemo(() => {
+    if (polygonCoordinates.length < 3) return { lat: null, lng: null };
 
-    let sumX = 0;
-    let sumY = 0;
-    let area = 0;
-
-    coordinates.forEach((current, i) => {
-      const next = coordinates[(i + 1) % coordinates.length];
+    let sumX = 0,
+      sumY = 0,
+      area = 0;
+    polygonCoordinates.forEach((current, i) => {
+      const next = polygonCoordinates[(i + 1) % polygonCoordinates.length];
       const crossProduct = current.lat * next.lng - next.lat * current.lng;
       area += crossProduct;
       sumX += (current.lat + next.lat) * crossProduct;
       sumY += (current.lng + next.lng) * crossProduct;
     });
 
-    area /= 2;
-    return {
-      centroidLat: sumX / (6 * area),
-      centroidLng: sumY / (6 * area),
-    };
-  };
-
-  // Calculate polygon bounds
-  const calculatePolygonBounds = (coordinates) => {
-    if (coordinates.length === 0) return null;
-
-    const lats = coordinates.map(({ lat }) => lat);
-    const lngs = coordinates.map(({ lng }) => lng);
-
-    const southWest = [Math.min(...lats), Math.min(...lngs)];
-    const northEast = [Math.max(...lats), Math.max(...lngs)];
-
-    return [southWest, northEast];
-  };
-
-  // Set map centroid and bounds when polygonCoordinates change
-  useEffect(() => {
-    if (polygonCoordinates.length > 0) {
-      const { centroidLat, centroidLng } =
-        calculatePolygonCentroid(polygonCoordinates);
-      setLat(centroidLat);
-      setLng(centroidLng);
-      setPolygonBounds(calculatePolygonBounds(polygonCoordinates));
-    }
+    area = area / 2;
+    return area !== 0
+      ? { lat: sumX / (6 * area), lng: sumY / (6 * area) }
+      : { lat: null, lng: null };
   }, [polygonCoordinates]);
 
-  // Handle map events
+  // Calculate polygon bounds using useMemo
+  const polygonBounds = useMemo(() => {
+    if (polygonCoordinates.length === 0) return null;
+
+    const lats = polygonCoordinates.map(({ lat }) => lat);
+    const lngs = polygonCoordinates.map(({ lng }) => lng);
+
+    return [
+      [Math.min(...lats), Math.min(...lngs)],
+      [Math.max(...lats), Math.max(...lngs)],
+    ];
+  }, [polygonCoordinates]);
+
+  // Set map center when polygon changes
+  useEffect(() => {
+    if (polygonCentroid.lat !== null && polygonCentroid.lng !== null) {
+      setLat(polygonCentroid.lat);
+      setLng(polygonCentroid.lng);
+    }
+  }, [polygonCentroid]);
+
+  // Map click event handler
   const MapEvents = () => {
     useMapEvents({
-      click(e) {
+      click: useCallback((e) => {
         setLat(e.latlng.lat);
         setLng(e.latlng.lng);
-      },
+      }, []),
     });
     return null;
   };
@@ -119,7 +114,7 @@ const FarmMap = ({ farmDetails }) => {
           className="farm-map__map-container"
           whenCreated={(mapInstance) => (mapRef.current = mapInstance)}
         >
-          {loading && (
+          {isLoading?.index && (
             <div className="farm-map__spinner-overlay">
               <Loading />
             </div>
@@ -147,11 +142,7 @@ const FarmMap = ({ farmDetails }) => {
       ) : (
         <div>Loading Map...</div>
       )}
-      <CropDetailsTab
-        farmDetails={farmDetails}
-        setLoading={setLoading}
-        selectedIndex={selectedIndex}
-      />
+      <CropDetailsTab farmDetails={farmDetails} selectedIndex={selectedIndex} />
     </div>
   );
 };

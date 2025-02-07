@@ -9,10 +9,12 @@ import {
   Legend,
 } from "recharts";
 import "./SoilHealthCard.css";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 
 const SoilHealthCard = () => {
   const { NpkData } = useSelector((state) => state.satellite);
+  const { t } = useTranslation();
 
   const data = [
     {
@@ -77,7 +79,7 @@ const SoilHealthCard = () => {
               dataKey="current"
               fill="#36A534"
               barSize={4}
-              name="Current"
+              name={t("current")}
               radius={[10, 10, 10, 10]}
               label={{
                 position: "right",
@@ -93,7 +95,7 @@ const SoilHealthCard = () => {
               dataKey="require"
               fill="#C4E930"
               barSize={4}
-              name="Required"
+              name={t("required")}
               radius={[10, 10, 10, 10]}
               label={{
                 position: "right",

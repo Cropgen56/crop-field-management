@@ -13,6 +13,7 @@ import CropGrowth from "../components/farmdetails/crop-growth/CropGrowth";
 import CropProtection from "../components/farmdetails/crop-protection/CropProtection";
 import SoilMoistureTemperature from "../components/farmdetails/soil-health/soil-moisture-temperature/SoilMoistureTemperature";
 import { useTranslation } from "react-i18next";
+import { resetState } from "../store/satelliteSlice";
 import {
   calculateAiYield,
   fetchCropHealth,
@@ -32,6 +33,7 @@ const FarmDetails = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
+    dispatch(resetState());
     dispatch(fetchSoilMoisture(farmDetails));
     dispatch(fetcNpkData(farmDetails));
     dispatch(fetchCropHealth(farmDetails));
@@ -56,7 +58,7 @@ const FarmDetails = () => {
         </section>
 
         <section>
-          <h2 className="section-heading">{t("cropHealth")}</h2>
+          <h2 className="section-heading">{t("soilHealth")}</h2>
           <SoilHealthCard />
           <SoilMoistureTemperature />
         </section>

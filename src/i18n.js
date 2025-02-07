@@ -4,17 +4,17 @@ import HttpBackend from "i18next-http-backend";
 import LanguageDetector from "i18next-browser-languagedetector";
 
 i18n
-  .use(HttpBackend) // Load translation files
-  .use(LanguageDetector) // Detect user's language
-  .use(initReactI18next) // Bind i18next to React
+  .use(HttpBackend)
+  .use(LanguageDetector)
+  .use(initReactI18next)
   .init({
-    fallbackLng: "en", // Default language
-    debug: true, // Enable debug mode
+    fallbackLng: "en",
+    debug: true,
     interpolation: {
-      escapeValue: false, // React already escapes by default
+      escapeValue: false,
     },
     backend: {
-      loadPath: "/locales/{{lng}}/translation.json", // Path to translation files
+      loadPath: "/locales/{{lng}}/translation.json",
     },
   });
 

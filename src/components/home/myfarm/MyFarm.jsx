@@ -7,7 +7,7 @@ import { useTranslation } from "react-i18next";
 
 const MyFarm = ({ fields }) => {
   const navigate = useNavigate();
-  const { t } = useTranslation(); // Translation hook
+  const { t } = useTranslation();
 
   return (
     <div className="my-farm">
