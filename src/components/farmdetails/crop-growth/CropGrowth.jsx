@@ -12,7 +12,7 @@ import "./CropGrowth.css";
 import { useTranslation } from "react-i18next";
 
 const CropGrowth = ({ farmDetails, npkData }) => {
-  const { t } = useTranslation(); // Initialize translation hook
+  const { t } = useTranslation();
   const data = [
     { week: "Week 1", height: 1 },
     { week: "Week 2", height: 2 },

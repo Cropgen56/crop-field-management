@@ -4,9 +4,8 @@ import soilTemperatureImage from "../../../../assets/Images/soil-temperature.png
 import { useSelector } from "react-redux";
 import { useTranslation } from "react-i18next";
 
-const SoilMoistureTemperature = () => {
+const SoilMoistureTemperature = ({ SoilMoisture }) => {
   const { t } = useTranslation();
-  const { SoilMoisture } = useSelector((state) => state.satellite);
 
   // Destructure data from soilMoisture
   const { Soil_Moisture, Soil_Temperature } = SoilMoisture?.data || {};
@@ -25,9 +24,7 @@ const SoilMoistureTemperature = () => {
         </div>
         <div className="data-container">
           <p>{t("soilMoisture")}</p>
-          <strong>
-            {soilMoistureValue ? soilTemperatureValue + "%" : " "}
-          </strong>
+          <strong>{soilMoistureValue ? soilMoistureValue + "%" : " "}</strong>
         </div>
       </div>
 

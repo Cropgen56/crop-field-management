@@ -65,6 +65,8 @@ const CropAdvisoryCard = ({ soilMoisture, farmDetails, npkData }) => {
     }
   }, [soilMoisture, farmDetails, npkData]);
 
+  console.log("test 1 " + advisory);
+
   const [currentDay, setCurrentDay] = useState(1);
 
   // Check if the advisory object exists and contains data for the current day

@@ -10,10 +10,8 @@ import {
 } from "recharts";
 import "./SoilHealthCard.css";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
 
-const SoilHealthCard = () => {
-  const { NpkData } = useSelector((state) => state.satellite);
+const SoilHealthCard = ({ NpkData }) => {
   const { t } = useTranslation();
 
   const data = [

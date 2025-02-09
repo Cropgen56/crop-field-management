@@ -28,17 +28,18 @@ const FarmDetails = () => {
   const location = useLocation();
   const farmDetails = location.state;
   const dispatch = useDispatch();
-  const { NpkData, SoilMoisture } = useSelector((state) => state.satellite);
 
   const { t } = useTranslation();
 
   useEffect(() => {
     dispatch(resetState());
-    dispatch(fetchSoilMoisture(farmDetails));
     dispatch(fetcNpkData(farmDetails));
+    dispatch(fetchSoilMoisture(farmDetails));
     dispatch(fetchCropHealth(farmDetails));
     dispatch(calculateAiYield(farmDetails));
   }, [dispatch, farmDetails]);
+
+  const { NpkData, SoilMoisture } = useSelector((state) => state?.satellite);
 
   return (
     <div className="farm-details">
@@ -59,8 +60,8 @@ const FarmDetails = () => {
 
         <section>
           <h2 className="section-heading">{t("soilHealth")}</h2>
-          <SoilHealthCard />
-          <SoilMoistureTemperature />
+          {NpkData ? <SoilHealthCard NpkData={NpkData} /> : null}
+          <SoilMoistureTemperature SoilMoisture={SoilMoisture} />
         </section>
 
         <FarmDetailsWeatherCard farmDetails={farmDetails} />
